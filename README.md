@@ -15,4 +15,4 @@ for key, value in map[string]interface{}
 
     if key not in schema: explode
     if value is not the expected type: explode
-    if the type of key exists in the schema 
+    if the type of key exists in the schema
