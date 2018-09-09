@@ -20,12 +20,13 @@ type Property struct {
 	Type                 string
 	Format               string
 	AdditionalProperties AdditionalProperties
+	Reference            string `json:"$ref"`
 }
 
 type Initializers struct {
 	Description   string
 	Type          string
-	Items         Items
+	Items         *Items
 	PatchMergeKey string
 	PatchStrategy string
 }

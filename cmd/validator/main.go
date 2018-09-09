@@ -10,12 +10,13 @@ import (
 
 func main() {
 	loader := kubernetes.NewLoader()
-	//	gf := kubernetes.NewKubernetesGroupFinder("io.k8s.api")
-	_, err := kubernetes.NewResolver("1.12")
+	gf := kubernetes.NewKubernetesGroupFinder("io.k8s.api")
+	reslover, err := kubernetes.NewResolver("1.12")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	validator := kubernetes.NewValidator(reslover)
 
 	// Read the input
 	reader := bufio.NewReader(os.Stdin)
@@ -25,8 +26,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(i)
-}
+	schema, err := reslover.Resolve(gf.GroupFind(i.APIVersion, i.Kind))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-// schema resolver
-// given a string return the schema
+	errors := validator.Validate(i.Data, schema)
+	fmt.Println(errors)
+}
