@@ -11,12 +11,7 @@ import (
 func main() {
 	loader := kubernetes.NewLoader()
 	gf := kubernetes.NewKubernetesGroupFinder("io.k8s.api")
-	reslover, err := kubernetes.NewResolver("1.12")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	validator := kubernetes.NewValidator(reslover)
+	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12"}
 
 	// Read the input
 	reader := bufio.NewReader(os.Stdin)
@@ -26,12 +21,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	schema, err := reslover.Resolve(gf.GroupFind(i.APIVersion, i.Kind))
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	for _, version := range versions {
+		reslover, err := kubernetes.NewResolver("1.12")
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		validator := kubernetes.NewValidator(reslover)
 
-	errors := validator.Validate(i.Data, schema, []string{})
-	fmt.Println(errors)
+		schema, err := reslover.Resolve(gf.GroupFind(i.APIVersion, i.Kind))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		errors := validator.Validate(i.Data, schema, []string{})
+		fmt.Println(version)
+		fmt.Println(errors)
+	}
 }
