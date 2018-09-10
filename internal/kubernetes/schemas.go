@@ -1,5 +1,7 @@
 package kubernetes
 
+import "fmt"
+
 type Swagger struct {
 	Definitions map[string]*Schema
 }
@@ -7,7 +9,7 @@ type Swagger struct {
 type Schema struct {
 	Description  string
 	Required     []string
-	Properties   map[string]Property
+	Properties   map[string]*Property
 	Initializers *Initializers
 	Kind         *Kind
 	Metadata     *Metadata
@@ -19,8 +21,18 @@ type Property struct {
 	Description          string
 	Type                 string
 	Format               string
+	Items                *Items
 	AdditionalProperties AdditionalProperties
 	Reference            string `json:"$ref"`
+}
+
+func (p *Property) String() string {
+	return fmt.Sprintf(`
+APIVersion: %s
+Type: %s
+Items: %v
+Reference: %s
+`, p.APIVersion, p.Type, p.Items, p.Reference)
 }
 
 type Initializers struct {

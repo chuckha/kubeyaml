@@ -32,6 +32,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	errors := validator.Validate(i.Data, schema)
+	errors := validator.Validate(i.Data, schema, []string{})
 	fmt.Println(errors)
 }
