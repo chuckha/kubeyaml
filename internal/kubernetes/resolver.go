@@ -8,6 +8,7 @@ import (
 )
 
 type Resolver struct {
+	version string
 	swagger *Swagger
 }
 
@@ -23,6 +24,7 @@ func NewResolver(version string) (*Resolver, error) {
 	}
 
 	return &Resolver{
+		version: version,
 		swagger: swagger,
 	}, nil
 }
@@ -37,6 +39,15 @@ func NewUnknownSchemaError(key string) error {
 func (u *UnknownSchemaError) Error() string {
 	return fmt.Sprintf("Unknown schema %v", u.schemaKey)
 }
+func (u *UnknownSchemaError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Error string
+		Key   string
+	}{
+		Error: u.Error(),
+		Key:   "apiVersion",
+	})
+}
 
 func (r *Resolver) Resolve(schemaKey string) (*Schema, error) {
 	schemaKey = strings.TrimPrefix(schemaKey, "#/definitions/")
@@ -45,4 +56,7 @@ func (r *Resolver) Resolve(schemaKey string) (*Schema, error) {
 		return nil, NewUnknownSchemaError(schemaKey)
 	}
 	return def, nil
+}
+func (r *Resolver) Version() string {
+	return r.version
 }

@@ -1,12 +1,14 @@
 package kubernetes
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
 
 type resolver interface {
 	Resolve(string) (*Schema, error)
+	Version() string
 }
 
 type Validator struct {
@@ -19,7 +21,13 @@ func NewValidator(resolver resolver) *Validator {
 	}
 }
 
-// keep track of the key we're at key1.key2.key3....
+func (v *Validator) Resolve(schemaKey string) (*Schema, error) {
+	return v.resolver.Resolve(schemaKey)
+}
+
+func (v *Validator) Version() string {
+	return v.resolver.Version()
+}
 
 func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, path []string) []error {
 	errors := make([]error, 0)
@@ -166,16 +174,27 @@ func (w *WrongTypeError) Error() string {
 }
 
 type YamlPathError struct {
-	err  error
-	path string
+	Err  error
+	Path string
 }
 
 func NewYamlPathError(path []string, err error) error {
 	return &YamlPathError{
-		err:  err,
-		path: strings.Join(path, "."),
+		Err:  err,
+		Path: strings.Join(path, "."),
 	}
 }
 func (y *YamlPathError) Error() string {
-	return fmt.Sprintf("[%s] %v", y.path, y.err)
+	return fmt.Sprintf("[%s] %v", y.Path, y.Err)
+}
+
+// MarshalJSON extracts the error since error is an interface
+func (y *YamlPathError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Key   string
+		Error string
+	}{
+		Key:   y.Path,
+		Error: y.Err.Error(),
+	})
 }

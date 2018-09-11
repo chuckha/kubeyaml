@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    <title>Kubernetes YAML Validation</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <form id="input" method="POST" action="/validate">
+        <label for="data">Enter YAML below</label>
+        <textarea name="data"></textarea>
+        <button type="submit">Validate</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>1.8</th>
+                <th>1.9</th>
+                <th>1.10</th>
+                <th>1.11</th>
+                <th>1.12</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="one-eight"></td>
+                <td id="one-nine"></td>
+                <td id="one-ten"></td>
+                <td id="one-eleven"></td>
+                <td id="one-twelve"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="one-eight-errors">
+        <thead>
+            <tr>
+                <th>1.8 Errors</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <table id="one-nine-errors">
+        <thead>
+            <tr>
+                <th>1.9 Errors</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <table id="one-ten-errors">
+        <thead>
+            <tr>
+                <th>1.10 Errors</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <table id="one-eleven-errors">
+        <thead>
+            <tr>
+                <th>1.11 Errors</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <table id="one-twelve-errors">
+        <thead>
+            <tr>
+                <th>1.12 Errors</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+</body>
+
+<script src="/static/app.js"></script>
+
+</html>

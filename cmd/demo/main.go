@@ -22,21 +22,21 @@ func main() {
 	}
 
 	for _, version := range versions {
-		reslover, err := kubernetes.NewResolver("1.12")
+		fmt.Println(version)
+		reslover, err := kubernetes.NewResolver(version)
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
+			continue
 		}
 		validator := kubernetes.NewValidator(reslover)
 
 		schema, err := reslover.Resolve(gf.GroupFind(i.APIVersion, i.Kind))
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
+			continue
 		}
 
 		errors := validator.Validate(i.Data, schema, []string{})
-		fmt.Println(version)
 		fmt.Println(errors)
 	}
 }
