@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/chuckha/k8svalidator/internal/kubernetes"
+	"github.com/chuckha/kube-validate/internal/kubernetes"
 )
 
 const (

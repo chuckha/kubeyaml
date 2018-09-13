@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/chuckha/k8svalidator/internal/kubernetes"
+	"github.com/chuckha/kube-validate/internal/kubernetes"
 )
 
 func main() {
