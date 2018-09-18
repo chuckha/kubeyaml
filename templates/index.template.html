@@ -9,8 +9,10 @@
     <h1>Kube YAML validations</h1>
     <p>Enter your kubernetes yaml below and see which versions it is valid for. Please only enter one YAML document at
         a time, this will not split YAML documents with <code>---</code> correctly.</p>
-    <p>If you find weird output, please make a <a href="gist.github.com" _blank="true">gist</a> and send it to <a href="https://twitter.com/chuck_ha"
-            _blank="true">me on twitter</a> or find me @cha on the <a href="http://slack.k8s.io" _blank="true">kubernetes
+    <p>If you find weird output, please make a <a href="https://gist.github.com" target="_blank">gist</a> and send it
+        to
+        <a href="https://twitter.com/chuck_ha" target="_blank">me on twitter</a> or find me @cha on the <a href="http://slack.k8s.io"
+            target="_blank">kubernetes
             slack</a></p>
     <form id="input" method="POST" action="/validate">
         <label for="data">Enter YAML below</label>
@@ -92,5 +94,18 @@
 </body>
 
 <script src="/static/app.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125983530-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-125983530-1');
+</script>
 
 </html>
