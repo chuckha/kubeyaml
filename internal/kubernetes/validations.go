@@ -1,9 +1,7 @@
 package kubernetes
 
 import (
-	"encoding/json"
 	"fmt"
-	"strings"
 )
 
 type resolver interface {
@@ -11,27 +9,35 @@ type resolver interface {
 	Version() string
 }
 
+// Validator knows enough to be able to validate a YAML document.
 type Validator struct {
 	resolver resolver
 }
 
+// NewValidator returns an instantiated validator.
 func NewValidator(resolver resolver) *Validator {
 	return &Validator{
 		resolver: resolver,
 	}
 }
 
+// Resolve wraps the internal resolver's resolve method.
 func (v *Validator) Resolve(schemaKey string) (*Schema, error) {
 	return v.resolver.Resolve(schemaKey)
 }
 
+// Version wraps the internal resolver's version method.
 func (v *Validator) Version() string {
 	return v.resolver.Version()
 }
 
+// Validate is the meat of this code. It sees incoming data and validates it against the known schemas.
+// This is recursive so it does a depth first search of all key/values.
+// TODO(chuckha) turn this into a stack-based dfs search.
 func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, path []string) []error {
 	errors := make([]error, 0)
 
+	// Validate each key one at a time descending as deep and as wide as the key goes.
 	for key, value := range incoming {
 		// Keep track of where we are
 		tlp := make([]string, len(path))
@@ -69,28 +75,39 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "[]interface{}", value)))
 				continue
 			}
-			// TODO: check that items is not nil
-			schema, err := v.resolver.Resolve(property.Items.Reference)
-			if err != nil {
-				fmt.Println(key, property)
-				errors = append(errors, NewYamlPathError(tlp, err))
-				continue
-			}
 
-			for _, item := range items {
-				m, ok := item.(map[interface{}]interface{})
-				if !ok {
-					errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "map[interface{}]interface{}", item)))
-					continue
+			switch property.Items.Type {
+			case "string":
+				for _, item := range items {
+					if _, ok := item.(string); !ok {
+						errors = append(errors, NewWrongTypeError(key, "string", item))
+					}
 				}
-				converted, err := keysToStrings(m)
+			// assume it's an array of objects
+			default:
+				// TODO: check that items is not nil
+				schema, err := v.resolver.Resolve(property.Items.Reference)
 				if err != nil {
+					fmt.Println(key, property)
 					errors = append(errors, NewYamlPathError(tlp, err))
 					continue
 				}
-				if errs := v.Validate(converted, schema, tlp); len(errs) > 0 {
-					errors = append(errors, errs...)
-					continue
+
+				for _, item := range items {
+					m, ok := item.(map[interface{}]interface{})
+					if !ok {
+						errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "map[interface{}]interface{}", item)))
+						continue
+					}
+					converted, err := keysToStrings(m)
+					if err != nil {
+						errors = append(errors, NewYamlPathError(tlp, err))
+						continue
+					}
+					if errs := v.Validate(converted, schema, tlp); len(errs) > 0 {
+						errors = append(errors, errs...)
+						continue
+					}
 				}
 			}
 		// default is some k8s object
@@ -132,69 +149,4 @@ func keysToStrings(in map[interface{}]interface{}) (map[string]interface{}, erro
 		out[key] = value
 	}
 	return out, nil
-}
-
-type KeyNotStringError struct {
-	key interface{}
-}
-
-func NewKeyNotStringError(key interface{}) error {
-	return &KeyNotStringError{key: key}
-}
-func (k *KeyNotStringError) Error() string {
-	return fmt.Sprintf("key %v is a '%T' but needs to be a string", k.key, k.key)
-}
-
-type UnknownKeyError struct {
-	key string
-}
-
-func NewUnknownKeyError(key string) error {
-	return &UnknownKeyError{key: key}
-}
-func (u *UnknownKeyError) Error() string {
-	return fmt.Sprintf("unknown key: %v", u.key)
-}
-
-type WrongTypeError struct {
-	key          string
-	expectedType string
-	value        interface{}
-}
-
-func NewWrongTypeError(k, expectedType string, v interface{}) error {
-	return &WrongTypeError{
-		key:          k,
-		expectedType: expectedType,
-		value:        v,
-	}
-}
-func (w *WrongTypeError) Error() string {
-	return fmt.Sprintf("key %v has wrong type %T (should be %s)", w.key, w.value, w.expectedType)
-}
-
-type YamlPathError struct {
-	Err  error
-	Path string
-}
-
-func NewYamlPathError(path []string, err error) error {
-	return &YamlPathError{
-		Err:  err,
-		Path: strings.Join(path, "."),
-	}
-}
-func (y *YamlPathError) Error() string {
-	return fmt.Sprintf("[%s] %v", y.Path, y.Err)
-}
-
-// MarshalJSON extracts the error since error is an interface
-func (y *YamlPathError) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Key   string
-		Error string
-	}{
-		Key:   y.Path,
-		Error: y.Err.Error(),
-	})
 }

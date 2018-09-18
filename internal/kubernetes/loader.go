@@ -8,18 +8,23 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Input is the top level YAML document the system receives.
 type Input struct {
 	Kind       string
 	APIVersion string
 	Data       map[string]interface{}
 }
 
+// Loader defines a struct that can read data from a stream into an internal type.
 type Loader struct{}
 
+// NewLoader returns a Loader.
 func NewLoader() *Loader {
 	return &Loader{}
 }
 
+// Load reads the input and returns the internal type representing the top level document
+// that is properly cleaned.
 func (l *Loader) Load(reader io.Reader) (*Input, error) {
 	b, err := ioutil.ReadAll(reader)
 	if err != nil {
@@ -58,26 +63,4 @@ func (l *Loader) Load(reader io.Reader) (*Input, error) {
 		Kind:       kind,
 		Data:       incoming,
 	}, nil
-}
-
-type RequiredKeyNotFoundError struct {
-	key string
-}
-
-func NewRequiredKeyNotFoundError(key string) error {
-	return &RequiredKeyNotFoundError{key: key}
-}
-func (r *RequiredKeyNotFoundError) Error() string {
-	return fmt.Sprintf("key %q not found", r.key)
-}
-
-type UnknownTypeError struct {
-	t interface{}
-}
-
-func NewUnknownTypeError(t interface{}) error {
-	return &UnknownTypeError{t: t}
-}
-func (u *UnknownTypeError) Error() string {
-	return fmt.Sprintf("unknown type %T", u.t)
 }

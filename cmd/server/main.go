@@ -38,7 +38,7 @@ func main() {
 	// all versions of kubernetes apis. It's entirely possible api versions have
 	// different namespaces.
 	// TODO associate this with the resolver and expose through the validator.
-	gf := kubernetes.NewKubernetesGroupFinder("io.k8s.api")
+	gf := kubernetes.NewAPIKeyer("io.k8s.api", ".k8s.io")
 
 	t, err := loadTemplates()
 	if err != nil {
@@ -90,7 +90,7 @@ type loader interface {
 	Load(io.Reader) (*kubernetes.Input, error)
 }
 type groupFinder interface {
-	GroupFind(string, string) string
+	APIKey(string, string) string
 }
 
 type server struct {
@@ -149,7 +149,7 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 	for _, v := range s.validators {
 
 		// Lookup the api group version to get started and ensure the kind is valid
-		schema, err := v.Resolve(s.finder.GroupFind(i.APIVersion, i.Kind))
+		schema, err := v.Resolve(s.finder.APIKey(i.APIVersion, i.Kind))
 		if err != nil {
 			errs[v.Version()] = []error{err}
 			continue

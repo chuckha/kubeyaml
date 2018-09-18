@@ -7,11 +7,13 @@ import (
 	"strings"
 )
 
+// Resolver looks up a schema based on the schema key.
 type Resolver struct {
 	version string
 	swagger *Swagger
 }
 
+// NewResolver loads a swagger file, keeps track of the version and returns an instantiated resolver.
 func NewResolver(version string) (*Resolver, error) {
 	file := fmt.Sprintf("internal/kubernetes/data/swagger-%v.json", version)
 	b, err := ioutil.ReadFile(file)
@@ -27,26 +29,6 @@ func NewResolver(version string) (*Resolver, error) {
 		version: version,
 		swagger: swagger,
 	}, nil
-}
-
-type UnknownSchemaError struct {
-	schemaKey string
-}
-
-func NewUnknownSchemaError(key string) error {
-	return &UnknownSchemaError{schemaKey: key}
-}
-func (u *UnknownSchemaError) Error() string {
-	return fmt.Sprintf("Unknown schema %v", u.schemaKey)
-}
-func (u *UnknownSchemaError) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Error string
-		Key   string
-	}{
-		Error: u.Error(),
-		Key:   "apiVersion",
-	})
 }
 
 func (r *Resolver) Resolve(schemaKey string) (*Schema, error) {

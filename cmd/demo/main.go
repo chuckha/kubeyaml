@@ -10,7 +10,7 @@ import (
 
 func main() {
 	loader := kubernetes.NewLoader()
-	gf := kubernetes.NewKubernetesGroupFinder("io.k8s.api")
+	gf := kubernetes.NewAPIKeyer("io.k8s.api", ".k8s.io")
 	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12"}
 
 	// Read the input
@@ -30,7 +30,7 @@ func main() {
 		}
 		validator := kubernetes.NewValidator(reslover)
 
-		schema, err := reslover.Resolve(gf.GroupFind(i.APIVersion, i.Kind))
+		schema, err := reslover.Resolve(gf.APIKey(i.APIVersion, i.Kind))
 		if err != nil {
 			fmt.Println(err)
 			continue
