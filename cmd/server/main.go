@@ -54,6 +54,7 @@ func main() {
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/validate", s.validate)
+	mux.HandleFunc("/favicon.ico", s.favicon)
 	mux.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/", s.index)
 	fmt.Println("listening on :9000")
@@ -99,6 +100,10 @@ type server struct {
 	validators []validator
 	loader     loader
 	finder     groupFinder
+}
+
+func (s *server) favicon(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "favicon.ico")
 }
 
 func (s *server) index(w http.ResponseWriter, r *http.Request) {

@@ -20,6 +20,6 @@ for key, value in map[string]interface{}
 ## Deploying
 
 1. Make the binary with `make kube-validate`
-2. Build the image with `./scripts/build-container.sh`
+2. Build the image with `./scripts/build-image.sh`
 3. Push the image with `./scripts/push-image.sh`
 4. On the server, restart the kube-validate service which will pull and restart the image.
