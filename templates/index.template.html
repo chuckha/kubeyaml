@@ -14,83 +14,89 @@
         <a href="https://twitter.com/chuck_ha" target="_blank">me on twitter</a> or find me @cha on the <a href="http://slack.k8s.io"
             target="_blank">kubernetes
             slack</a></p>
+
+    <p onclick="example()">Click me to fill in an example</p>
     <form id="input" method="POST" action="/validate">
         <label for="data">Enter YAML below</label>
         <textarea name="data"></textarea>
         <button type="submit">Validate</button>
     </form>
 
-    <table>
-        <thead>
-            <tr>
-                <th>1.8</th>
-                <th>1.9</th>
-                <th>1.10</th>
-                <th>1.11</th>
-                <th>1.12</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td id="one-eight"></td>
-                <td id="one-nine"></td>
-                <td id="one-ten"></td>
-                <td id="one-eleven"></td>
-                <td id="one-twelve"></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="result-container">
+        <div class="bar">
+            <button id="one-eight-button" class="tab" onclick="showResult('one-eight')">1.8</button>
+            <button id="one-nine-button" class="tab" onclick="showResult('one-nine')">1.9</button>
+            <button id="one-ten-button" class="tab" onclick="showResult('one-ten')">1.10</button>
+            <button id="one-eleven-button" class="tab" onclick="showResult('one-eleven')">1.11</button>
+            <button id="one-twelve-button" class="tab" onclick="showResult('one-twelve')">1.12</button>
+        </div>
 
-    <table id="one-eight-errors">
-        <thead>
-            <tr>
-                <th>1.8 Errors</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <table id="one-nine-errors">
-        <thead>
-            <tr>
-                <th>1.9 Errors</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <table id="one-ten-errors">
-        <thead>
-            <tr>
-                <th>1.10 Errors</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <table id="one-eleven-errors">
-        <thead>
-            <tr>
-                <th>1.11 Errors</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <table id="one-twelve-errors">
-        <thead>
-            <tr>
-                <th>1.12 Errors</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
+        <div id="one-eight" class="result">
+            <h2>1.8</h2>
+            <pre></pre>
+            <table id="one-eight-errors">
+                <thead>
+                    <tr>
+                        <th>1.8 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div id="one-nine" class="result hide">
+            <h2>1.9</h2>
+            <pre></pre>
+            <table id="one-nine-errors">
+                <thead>
+                    <tr>
+                        <th>1.9 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div id="one-ten" class="result hide">
+            <h2>1.10</h2>
+            <pre></pre>
+            <table id="one-ten-errors">
+                <thead>
+                    <tr>
+                        <th>1.10 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div id="one-eleven" class="result hide">
+            <h2>1.11</h2>
+            <pre></pre>
+            <table id="one-eleven-errors">
+                <thead>
+                    <tr>
+                        <th>1.11 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div id="one-twelve" class="result hide">
+            <h2>1.12</h2>
+            <pre></pre>
+            <table id="one-twelve-errors">
+                <thead>
+                    <tr>
+                        <th>1.12 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 
 <script src="/static/app.js"></script>

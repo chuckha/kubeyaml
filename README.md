@@ -16,3 +16,10 @@ for key, value in map[string]interface{}
     if key not in schema: explode
     if value is not the expected type: explode
     if the type of key exists in the schema
+
+## Deploying
+
+1. Make the binary with `make kube-validate`
+2. Build the image with `./scripts/build-container.sh`
+3. Push the image with `./scripts/push-image.sh`
+4. On the server, restart the kube-validate service which will pull and restart the image.

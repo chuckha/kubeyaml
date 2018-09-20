@@ -22,3 +22,17 @@ table thead tr th {
 table tbody tr td {
     text-align: center;
 }
+
+/* result styles*/
+
+.hide {
+    display: none;
+}
+
+.tab {
+    font-size: 26px;
+}
+
+span.red {
+    color: red;
+}
