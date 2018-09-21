@@ -111,7 +111,8 @@ func TestValidate(t *testing.T) {
 						Type: "array",
 					},
 					"blue": &kubernetes.Property{
-						Type: "some obj",
+						Type:      "some obj",
+						Reference: "banana",
 					},
 				},
 			},
