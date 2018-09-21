@@ -133,6 +133,10 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 						}
 					}
 				case "date-time":
+					// nil is valid object reference
+					if value == nil {
+						continue
+					}
 					date, ok := value.(string)
 					if !ok {
 						errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "string", value)))
