@@ -127,3 +127,16 @@ func (y *YamlPathError) MarshalJSON() ([]byte, error) {
 		Error: y.Err.Error(),
 	})
 }
+
+type UnknownFormatError struct {
+	Format string
+}
+
+func (u *UnknownFormatError) Error() string {
+	return fmt.Sprintf("unknown format %q", u.Format)
+}
+func NewUnknownFormatError(format string) error {
+	return &UnknownFormatError{
+		Format: format,
+	}
+}

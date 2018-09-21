@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"fmt"
+	"time"
 )
 
 type resolver interface {
@@ -52,6 +53,7 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 
 		switch property.Type {
 		case "string":
+			// TODO: formats?
 			if _, ok := value.(string); !ok {
 				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "string", value)))
 			}
@@ -119,6 +121,33 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 				errors = append(errors, NewYamlPathError(tlp, err))
 				continue
 			}
+
+			// Bail if the object reference is a type rename
+			if schema.Type == "string" {
+				// format must be set if type is string
+				switch schema.Format {
+				case "int-or-string":
+					if _, ok := value.(string); !ok {
+						if _, ok2 := value.(int); !ok2 {
+							errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "int-or-string", value)))
+						}
+					}
+				case "date-time":
+					date, ok := value.(string)
+					if !ok {
+						errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "string", value)))
+						continue
+					}
+					if _, err := time.Parse("2006-01-02T15:04:05Z", date); err != nil {
+						errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "time.Time", value)))
+					}
+				default:
+					errors = append(errors, NewYamlPathError(tlp, NewUnknownFormatError(schema.Format)))
+				}
+				continue
+			}
+
+			// It's an object if it's not a string.
 			d, ok := value.(map[interface{}]interface{})
 			if !ok {
 				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "map[interface{}]interface{}", value)))

@@ -23,6 +23,10 @@ type Schema struct {
 	Metadata *Metadata
 	// GVK is the GroupVersionKind from kubernetes.
 	GVK []*GroupVersionKind `json:"x-kubernetes-group-version-kind"`
+	// Type is when the object is actually a type rename  of a builtin (type X string)
+	Type string
+	// Format is the format of the type when Type is "string"
+	Format string
 }
 
 // Property is a single property, or field, of a schema.
