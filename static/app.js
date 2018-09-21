@@ -62,8 +62,8 @@ function showResult(item) {
 // /a:/, /  b:/, /    c:/, /      d:/ and runs each one
 function keyToRegexes(keys, value) {
     keys.split(".").forEach(function (key, i) {
-        var reg = new RegExp("  ".repeat(i) + key + ":");
-        value = value.replace(reg, '<span class="red">' + "  ".repeat(i) + key + '</span>:');
+        var reg = new RegExp("\(" + "[ -] ".repeat(i) + key + "\):");
+        value = value.replace(reg, '<span class="red">$1</span>:');
     });
     return value;
 }
