@@ -16,11 +16,62 @@
             slack</a></p>
 
     <p onclick="example()">👉Click me to fill in an example👈</p>
-    <form id="input" method="POST" action="/validate">
-        <label for="data">Enter YAML below</label>
-        <textarea name="data"></textarea>
-        <button type="submit">Validate</button>
-    </form>
+    <div id="pond">
+        <div class="user-input">
+            <form id="input" method="POST" action="/validate">
+                <label for="data">Enter YAML below</label>
+                <textarea name="data"></textarea>
+                <button type="submit">Validate</button>
+            </form>
+        </div>
+        <div class="errors">
+            <table id="one-eight-errors">
+                <thead>
+                    <tr>
+                        <th>1.8 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <table id="one-nine-errors">
+                <thead>
+                    <tr>
+                        <th>1.9 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <table id="one-ten-errors">
+                <thead>
+                    <tr>
+                        <th>1.10 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <table id="one-eleven-errors">
+                <thead>
+                    <tr>
+                        <th>1.11 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <table id="one-twelve-errors">
+                <thead>
+                    <tr>
+                        <th>1.12 Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <div class="result-container">
         <div class="bar">
@@ -34,67 +85,22 @@
         <div id="one-eight" class="result">
             <h2>1.8</h2>
             <pre></pre>
-            <table id="one-eight-errors">
-                <thead>
-                    <tr>
-                        <th>1.8 Errors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
         <div id="one-nine" class="result hide">
             <h2>1.9</h2>
             <pre></pre>
-            <table id="one-nine-errors">
-                <thead>
-                    <tr>
-                        <th>1.9 Errors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
         <div id="one-ten" class="result hide">
             <h2>1.10</h2>
             <pre></pre>
-            <table id="one-ten-errors">
-                <thead>
-                    <tr>
-                        <th>1.10 Errors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
         <div id="one-eleven" class="result hide">
             <h2>1.11</h2>
             <pre></pre>
-            <table id="one-eleven-errors">
-                <thead>
-                    <tr>
-                        <th>1.11 Errors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
         <div id="one-twelve" class="result hide">
             <h2>1.12</h2>
             <pre></pre>
-            <table id="one-twelve-errors">
-                <thead>
-                    <tr>
-                        <th>1.12 Errors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
     </div>
 </body>

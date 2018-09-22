@@ -167,6 +167,7 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 	for _, v := range s.validators {
 
 		// Lookup the api group version to get started and ensure the kind is valid
+		// TODO: Consider making Resolve take a version and a kind so it can produce a better error message
 		schema, err := v.Resolve(s.finder.APIKey(i.APIVersion, i.Kind))
 		if err != nil {
 			errs[v.Version()] = []error{err}

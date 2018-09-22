@@ -3,7 +3,7 @@ body {
 }
 
 textarea {
-    width: 50%;
+    width: 450px;
     height: 500px;
     display: block;
     font-family: monospace;
@@ -35,4 +35,8 @@ table tbody tr td {
 
 span.red {
     color: red;
+}
+
+#pond {
+    display: flex;
 }

@@ -47,7 +47,7 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 
 		property, ok := schema.Properties[key]
 		if !ok {
-			errors = append(errors, NewYamlPathError(tlp, NewUnknownKeyError(key)))
+			errors = append(errors, NewYamlPathError(tlp, "", NewUnknownKeyError(key)))
 			continue
 		}
 
@@ -55,26 +55,26 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 		case "string":
 			// TODO: formats?
 			if _, ok := value.(string); !ok {
-				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "string", value)))
+				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "string", value)))
 			}
 		case "integer":
 			// ignore property.Format until it causes a bug
 			if _, ok := value.(int); !ok {
-				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "integer", value)))
+				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "integer", value)))
 			}
 		case "boolean":
 			if _, ok := value.(bool); !ok {
-				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "boolean", value)))
+				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "boolean", value)))
 			}
 		case "object":
 			// this is for things like labels; map[interface{}]interface{} looks weird but that's how our yaml parser works.
 			if _, ok := value.(map[interface{}]interface{}); !ok {
-				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "map[interface{}]interface{}", value)))
+				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "map[interface{}]interface{}", value)))
 			}
 		case "array":
 			items, ok := value.([]interface{})
 			if !ok {
-				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "[]interface{}", value)))
+				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "[]interface{}", value)))
 				continue
 			}
 
@@ -91,19 +91,19 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 				schema, err := v.resolver.Resolve(property.Items.Reference)
 				if err != nil {
 					fmt.Println(key, property)
-					errors = append(errors, NewYamlPathError(tlp, err))
+					errors = append(errors, NewYamlPathError(tlp, schema, err))
 					continue
 				}
 
 				for _, item := range items {
 					m, ok := item.(map[interface{}]interface{})
 					if !ok {
-						errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "map[interface{}]interface{}", item)))
+						errors = append(errors, NewYamlPathError(tlp, item, NewWrongTypeError(key, "map[interface{}]interface{}", item)))
 						continue
 					}
 					converted, err := keysToStrings(m)
 					if err != nil {
-						errors = append(errors, NewYamlPathError(tlp, err))
+						errors = append(errors, NewYamlPathError(tlp, item, err))
 						continue
 					}
 					if errs := v.Validate(converted, schema, tlp); len(errs) > 0 {
@@ -118,7 +118,7 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 			if err != nil {
 				// DEBUG LINE good to use if there is a weird error
 				// fmt.Println(key, property)
-				errors = append(errors, NewYamlPathError(tlp, err))
+				errors = append(errors, NewYamlPathError(tlp, property.Reference, err))
 				continue
 			}
 
@@ -129,7 +129,7 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 				case "int-or-string":
 					if _, ok := value.(string); !ok {
 						if _, ok2 := value.(int); !ok2 {
-							errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "int-or-string", value)))
+							errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "int-or-string", value)))
 						}
 					}
 				case "date-time":
@@ -139,14 +139,14 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 					}
 					date, ok := value.(string)
 					if !ok {
-						errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "string", value)))
+						errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "string", value)))
 						continue
 					}
 					if _, err := time.Parse("2006-01-02T15:04:05Z", date); err != nil {
-						errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "time.Time", value)))
+						errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "time.Time", value)))
 					}
 				default:
-					errors = append(errors, NewYamlPathError(tlp, NewUnknownFormatError(schema.Format)))
+					errors = append(errors, NewYamlPathError(tlp, value, NewUnknownFormatError(schema.Format)))
 				}
 				continue
 			}
@@ -154,12 +154,12 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 			// It's an object if it's not a string.
 			d, ok := value.(map[interface{}]interface{})
 			if !ok {
-				errors = append(errors, NewYamlPathError(tlp, NewWrongTypeError(key, "map[interface{}]interface{}", value)))
+				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "map[interface{}]interface{}", value)))
 				continue
 			}
 			convertedMap, err := keysToStrings(d)
 			if err != nil {
-				errors = append(errors, NewYamlPathError(tlp, err))
+				errors = append(errors, NewYamlPathError(tlp, value, err))
 				continue
 			}
 			if subErrors := v.Validate(convertedMap, schema, tlp); len(subErrors) > 0 {

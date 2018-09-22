@@ -43,7 +43,7 @@ func (l *Loader) Load(reader io.Reader) (*Input, error) {
 
 	apiVersion, ok := val.(string)
 	if !ok {
-		return nil, NewYamlPathError([]string{"apiVersion"}, NewUnknownTypeError(val))
+		return nil, NewYamlPathError([]string{"apiVersion"}, val, NewUnknownTypeError(val))
 	}
 
 	val, ok = incoming["kind"]
@@ -53,7 +53,7 @@ func (l *Loader) Load(reader io.Reader) (*Input, error) {
 
 	kind, ok := val.(string)
 	if !ok {
-		return nil, NewYamlPathError([]string{"kind"}, NewUnknownTypeError(val))
+		return nil, NewYamlPathError([]string{"kind"}, val, NewUnknownTypeError(val))
 	}
 
 	delete(incoming, "apiVersion")

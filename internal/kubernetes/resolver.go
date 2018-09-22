@@ -35,7 +35,8 @@ func (r *Resolver) Resolve(schemaKey string) (*Schema, error) {
 	schemaKey = strings.TrimPrefix(schemaKey, "#/definitions/")
 	def, ok := r.swagger.Definitions[schemaKey]
 	if !ok {
-		return nil, NewUnknownSchemaError(schemaKey)
+		// Ideally we return the passed in apiVersion but that requires a reshuffling of some functions
+		return nil, NewYamlPathError([]string{"apiVersion"}, "", NewUnknownSchemaError(schemaKey))
 	}
 	return def, nil
 }

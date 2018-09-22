@@ -49,7 +49,7 @@ func NewUnknownSchemaError(key string) error {
 
 // Error implements error interface.
 func (u *UnknownSchemaError) Error() string {
-	return fmt.Sprintf("Unknown schema %v", u.schemaKey)
+	return fmt.Sprintf("unknown schema %v", u.schemaKey)
 }
 
 // MarshalJSON is used for the json.Marshal call.
@@ -103,14 +103,16 @@ func (w *WrongTypeError) Error() string {
 }
 
 type YamlPathError struct {
-	Err  error
-	Path string
+	Err   error
+	Value interface{} `json:",omitempty"`
+	Path  string
 }
 
-func NewYamlPathError(path []string, err error) error {
+func NewYamlPathError(path []string, value interface{}, err error) error {
 	return &YamlPathError{
-		Err:  err,
-		Path: strings.Join(path, "."),
+		Err:   err,
+		Value: value,
+		Path:  strings.Join(path, "."),
 	}
 }
 func (y *YamlPathError) Error() string {
@@ -121,9 +123,11 @@ func (y *YamlPathError) Error() string {
 func (y *YamlPathError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Key   string
+		Value interface{}
 		Error string
 	}{
 		Key:   y.Path,
+		Value: y.Value,
 		Error: y.Err.Error(),
 	})
 }
