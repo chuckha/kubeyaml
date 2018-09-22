@@ -8,4 +8,4 @@ RUN mkdir -p /internal/kubernetes/data
 ADD internal/kubernetes/data/ /internal/kubernetes/data/
 
 ADD kube-validate /kube-validate
-CMD [ "/kube-validate" ]
+ENTRYPOINT [ "/kube-validate" ]

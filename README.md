@@ -23,3 +23,13 @@ for key, value in map[string]interface{}
 2. Build the image with `./scripts/build-image.sh`
 3. Push the image with `./scripts/push-image.sh`
 4. On the server, restart the kube-validate service which will pull and restart the image.
+
+## TLS
+
+use certbot on the host
+
+```
+sudo cerbot --nginx
+```
+
+and fill out the details

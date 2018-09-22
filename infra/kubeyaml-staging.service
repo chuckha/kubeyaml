@@ -1,0 +1,10 @@
+[Unit]
+Description=kube-validate validates kubernetes yaml
+
+[Service]
+ExecStartPre=/usr/bin/docker pull chuckdha/kube-validate:staging
+ExecStart=/usr/bin/docker run --network host chuckdha/kube-validate:staging -port 8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
