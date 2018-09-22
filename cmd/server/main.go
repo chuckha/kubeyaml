@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"html/template"
 	"io"
@@ -20,7 +21,19 @@ const (
 	templateSuffix = ".template.html"
 )
 
+type ServerArgs struct {
+	Port string
+}
+
 func main() {
+	// Set up the server args
+	fs := flag.NewFlagSet("server", flag.ExitOnError)
+	sa := &ServerArgs{}
+	fs.StringVar(&sa.Port, "port", "9000", "the port for the server to listen on")
+
+	// Parse flags
+	fs.Parse(os.Args[1:])
+
 	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12"}
 	validators := make([]validator, len(versions))
 	for i, version := range versions {
@@ -57,8 +70,8 @@ func main() {
 	mux.HandleFunc("/favicon.ico", s.favicon)
 	mux.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/", s.index)
-	fmt.Println("listening on :9000")
-	http.ListenAndServe(":9000", mux)
+	fmt.Printf("listening on port :%s\n", sa.Port)
+	http.ListenAndServe(":"+sa.Port, mux)
 }
 
 type logger interface {
