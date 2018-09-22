@@ -10,8 +10,8 @@ document.getElementById("input").onsubmit = function (el, ev) {
     request.send("data=" + encodedData);
     request.onreadystatechange = function (ev) {
         if (ev.target.readyState === 4) {
-            setResults(JSON.parse(this.response));
             textArea.disabled = false;
+            setResults(JSON.parse(this.response));
         }
     }
 
