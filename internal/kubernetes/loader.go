@@ -12,7 +12,7 @@ import (
 type Input struct {
 	Kind       string
 	APIVersion string
-	Data       map[string]interface{}
+	Data       map[interface{}]interface{}
 }
 
 // Loader defines a struct that can read data from a stream into an internal type.
@@ -31,7 +31,7 @@ func (l *Loader) Load(reader io.Reader) (*Input, error) {
 		return nil, fmt.Errorf("failed to read incoming reader: %v", err)
 	}
 
-	incoming := map[string]interface{}{}
+	incoming := map[interface{}]interface{}{}
 	if err := yaml.Unmarshal(b, incoming); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal yaml with error %v", err)
 	}

@@ -95,7 +95,7 @@ func (l *log) Infof(format string, args ...interface{}) error {
 }
 
 type validator interface {
-	Validate(map[string]interface{}, *kubernetes.Schema, []string) []error
+	Validate(map[interface{}]interface{}, *kubernetes.Schema) []error
 	Resolve(string) (*kubernetes.Schema, error)
 	Version() string
 }
@@ -174,7 +174,7 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		errs[v.Version()] = v.Validate(i.Data, schema, []string{})
+		errs[v.Version()] = v.Validate(i.Data, schema)
 	}
 
 	out, err := json.Marshal(errs)

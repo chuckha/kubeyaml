@@ -35,14 +35,27 @@ func (v *Validator) Version() string {
 // Validate is the meat of this code. It sees incoming data and validates it against the known schemas.
 // This is recursive so it does a depth first search of all key/values.
 // TODO(chuckha) turn this into a stack-based dfs search.
-func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, path []string) []error {
+func (v *Validator) Validate(incoming map[interface{}]interface{}, schema *Schema) []error {
+	return v.validate(incoming, schema, []string{})
+}
+
+// validate
+func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schema, path []string) []error {
 	errors := make([]error, 0)
 
 	// Validate each key one at a time descending as deep and as wide as the key goes.
-	for key, value := range incoming {
+	for k, value := range incoming {
 		// Keep track of where we are
 		tlp := make([]string, len(path))
 		copy(tlp, path)
+
+		key, ok := k.(string)
+		if !ok {
+			errors = append(errors, NewYamlPathError(tlp, "", NewKeyNotStringError(k)))
+			continue
+		}
+
+		// the key is a string so we can now act on it.
 		tlp = append(tlp, key)
 
 		property, ok := schema.Properties[key]
@@ -101,12 +114,7 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 						errors = append(errors, NewYamlPathError(tlp, item, NewWrongTypeError(key, "map[interface{}]interface{}", item)))
 						continue
 					}
-					converted, err := keysToStrings(m)
-					if err != nil {
-						errors = append(errors, NewYamlPathError(tlp, item, err))
-						continue
-					}
-					if errs := v.Validate(converted, schema, tlp); len(errs) > 0 {
+					if errs := v.validate(m, schema, tlp); len(errs) > 0 {
 						errors = append(errors, errs...)
 						continue
 					}
@@ -157,12 +165,7 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "map[interface{}]interface{}", value)))
 				continue
 			}
-			convertedMap, err := keysToStrings(d)
-			if err != nil {
-				errors = append(errors, NewYamlPathError(tlp, value, err))
-				continue
-			}
-			if subErrors := v.Validate(convertedMap, schema, tlp); len(subErrors) > 0 {
+			if subErrors := v.validate(d, schema, tlp); len(subErrors) > 0 {
 				errors = append(errors, subErrors...)
 				continue
 			}
@@ -170,16 +173,4 @@ func (v *Validator) Validate(incoming map[string]interface{}, schema *Schema, pa
 	}
 
 	return errors
-}
-
-func keysToStrings(in map[interface{}]interface{}) (map[string]interface{}, error) {
-	out := make(map[string]interface{})
-	for k, value := range in {
-		key, ok := k.(string)
-		if !ok {
-			return nil, NewKeyNotStringError(k)
-		}
-		out[key] = value
-	}
-	return out, nil
 }

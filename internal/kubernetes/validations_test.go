@@ -24,7 +24,7 @@ func TestValidate(t *testing.T) {
 		name        string
 		definitions map[string]*kubernetes.Schema
 		version     string
-		incoming    map[string]interface{}
+		incoming    map[interface{}]interface{}
 		schema      *kubernetes.Schema
 		path        []string
 		check       func([]error, *testing.T)
@@ -49,11 +49,11 @@ func TestValidate(t *testing.T) {
 				},
 			},
 			version: "v1.12",
-			incoming: map[string]interface{}{
-				"buttons": interface{}(map[interface{}]interface{}{
+			incoming: map[interface{}]interface{}{
+				interface{}("buttons"): interface{}(map[interface{}]interface{}{
 					interface{}("submit"): interface{}("blue"),
 				}),
-				"headers": interface{}([]interface{}{
+				interface{}("headers"): interface{}([]interface{}{
 					interface{}(map[interface{}]interface{}{
 						interface{}("size"): interface{}(2),
 					}),
@@ -72,7 +72,6 @@ func TestValidate(t *testing.T) {
 					},
 				},
 			},
-			path: []string{},
 			check: func(errors []error, t *testing.T) {
 				if len(errors) != 0 {
 					t.Fatalf("expected no errors but got %v", errors)
@@ -85,13 +84,13 @@ func TestValidate(t *testing.T) {
 				"banana": &kubernetes.Schema{},
 			},
 			version: "v1.1",
-			incoming: map[string]interface{}{
-				"sides":  interface{}("hello"),
-				"other":  interface{}(4),
-				"yellow": interface{}(300),
-				"green":  interface{}("hello"),
-				"red":    interface{}(23),
-				"blue":   interface{}("hi"),
+			incoming: map[interface{}]interface{}{
+				interface{}("sides"):  interface{}("hello"),
+				interface{}("other"):  interface{}(4),
+				interface{}("yellow"): interface{}(300),
+				interface{}("green"):  interface{}("hello"),
+				interface{}("red"):    interface{}(23),
+				interface{}("blue"):   interface{}("hi"),
 			},
 			schema: &kubernetes.Schema{
 				Properties: map[string]*kubernetes.Property{
@@ -116,7 +115,6 @@ func TestValidate(t *testing.T) {
 					},
 				},
 			},
-			path: []string{},
 			check: func(errors []error, t *testing.T) {
 				if len(errors) == 0 {
 					t.Fatalf("expected lots of errors but found none")
@@ -134,7 +132,7 @@ func TestValidate(t *testing.T) {
 				version: tc.version,
 			}
 			v := kubernetes.NewValidator(res)
-			errors := v.Validate(tc.incoming, tc.schema, tc.path)
+			errors := v.Validate(tc.incoming, tc.schema)
 			tc.check(errors, t)
 		})
 	}
