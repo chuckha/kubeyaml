@@ -24,6 +24,13 @@ for key, value in map[string]interface{}
 3. Push the image with `./scripts/push-image.sh`
 4. On the server, restart the kube-validate service which will pull and restart the image.
 
+### Staging
+
+1. Make the binary
+2. `IMAGE_TAG=staging ./scripts/build-image.sh`
+3. `IMAGE_TAG=staging ./scripts/push-image.sh`
+4. `service kube-validate-staging restart`
+
 ## TLS
 
 use certbot on the host
@@ -33,3 +40,18 @@ sudo cerbot --nginx
 ```
 
 and fill out the details
+
+
+# Why didn't you just...
+
+## Use a json schema validator
+
+Most json schema validators do not validate YAML against json schemas.
+
+## Generate go objects from the swagger spec using go-swagger
+
+I did try this but then realized go can't do dynamic object lookup and only loads objects that are directly referenced.
+
+## Write it in python
+
+I did but then deleted it because I am not a good python programmer.

@@ -1,5 +1,10 @@
 document.getElementById("input").onsubmit = function (el, ev) {
     var textArea = document.getElementsByName("data")[0];
+
+    // if (el.target[0].value.indexOf("\t") >= 0) {
+    // where to put this error...
+    // }
+
     textArea.disabled = true;
     var encodedData = encodeURIComponent(el.target[0].value);
 
