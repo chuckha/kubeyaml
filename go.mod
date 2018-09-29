@@ -1,0 +1,42 @@
+module github.com/chuckha/kube-validate
+
+require (
+	github.com/PuerkitoBio/purell v1.1.0
+	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578
+	github.com/asaskevich/govalidator v0.0.0-20180315120708-ccb8e960c48f
+	github.com/fsnotify/fsnotify v1.4.7
+	github.com/globalsign/mgo v0.0.0-20180905125535-1ca0a4f7cbcb
+	github.com/go-openapi/analysis v0.0.0-20180825180245-b006789cd277
+	github.com/go-openapi/errors v0.0.0-20180926063021-1801eed82180
+	github.com/go-openapi/inflect v0.0.0-20130829110746-b1f6470ffb9c
+	github.com/go-openapi/jsonpointer v0.0.0-20180322222829-3a0015ad55fa
+	github.com/go-openapi/jsonreference v0.0.0-20180322222742-3fb327e6747d
+	github.com/go-openapi/loads v0.0.0-20180825180312-fd899182a268
+	github.com/go-openapi/runtime v0.0.0-20180920151709-4f900dc2ade9
+	github.com/go-openapi/spec v0.0.0-20180825180323-f1468acb3b29
+	github.com/go-openapi/strfmt v0.0.0-20180910212104-776114108ccc
+	github.com/go-openapi/swag v0.0.0-20180908172849-dd0dad036e67
+	github.com/go-openapi/validate v0.0.0-20180825180342-e0648ff40507
+	github.com/go-swagger/go-swagger v0.0.0-20180811232207-dd867fd63c30
+	github.com/gorilla/handlers v1.4.0
+	github.com/hashicorp/hcl v1.0.0
+	github.com/jessevdk/go-flags v1.4.0
+	github.com/kr/pretty v0.1.0
+	github.com/kr/text v0.1.0
+	github.com/magiconair/properties v1.8.0
+	github.com/mailru/easyjson v0.0.0-20180823135443-60711f1a8329
+	github.com/mitchellh/mapstructure v1.0.0
+	github.com/pelletier/go-toml v1.2.0
+	github.com/spf13/afero v1.1.2
+	github.com/spf13/cast v1.2.0
+	github.com/spf13/jwalterweatherman v1.0.0
+	github.com/spf13/pflag v1.0.2
+	github.com/spf13/viper v0.0.0-20180928080504-8e194e8ad243
+	github.com/toqueteos/webbrowser v1.1.0
+	golang.org/x/net v0.0.0-20180921000356-2f5d2388922f
+	golang.org/x/sys v0.0.0-20180928133829-e4b3c5e90611
+	golang.org/x/text v0.3.0
+	golang.org/x/tools v0.0.0-20180928181343-b3c0be4c978b
+	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
+	gopkg.in/yaml.v2 v2.2.1
+)
