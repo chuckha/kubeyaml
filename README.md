@@ -31,6 +31,10 @@ for key, value in map[string]interface{}
 3. `IMAGE_TAG=staging ./scripts/push-image.sh`
 4. `service kube-validate-staging restart`
 
+## Updating schemas
+
+1. Run `go run scripts/update-schemas.go`
+
 ## TLS
 
 use certbot on the host
