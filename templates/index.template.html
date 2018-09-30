@@ -24,8 +24,8 @@
                 <button type="submit">Validate</button>
             </form>
         </div>
-        <div class="errors">
-            <table id="one-eight-errors">
+        <div>
+            <table class="errors">
                 <thead>
                     <tr>
                         <th>1.8 Errors</th>
@@ -34,7 +34,7 @@
                 <tbody>
                 </tbody>
             </table>
-            <table id="one-nine-errors">
+            <table class="errors">
                 <thead>
                     <tr>
                         <th>1.9 Errors</th>
@@ -43,7 +43,7 @@
                 <tbody>
                 </tbody>
             </table>
-            <table id="one-ten-errors">
+            <table class="errors">
                 <thead>
                     <tr>
                         <th>1.10 Errors</th>
@@ -52,7 +52,7 @@
                 <tbody>
                 </tbody>
             </table>
-            <table id="one-eleven-errors">
+            <table class="errors">
                 <thead>
                     <tr>
                         <th>1.11 Errors</th>
@@ -61,7 +61,7 @@
                 <tbody>
                 </tbody>
             </table>
-            <table id="one-twelve-errors">
+            <table class="errors">
                 <thead>
                     <tr>
                         <th>1.12 Errors</th>
@@ -74,34 +74,32 @@
     </div>
 
     <div class="result-container">
-        <div class="bar">
-            <button id="one-eight-button" class="tab" onclick="showResult('one-eight')">1.8</button>
-            <button id="one-nine-button" class="tab" onclick="showResult('one-nine')">1.9</button>
-            <button id="one-ten-button" class="tab" onclick="showResult('one-ten')">1.10</button>
-            <button id="one-eleven-button" class="tab" onclick="showResult('one-eleven')">1.11</button>
-            <button id="one-twelve-button" class="tab" onclick="showResult('one-twelve')">1.12</button>
-        </div>
-
-        <div id="one-eight" class="result">
-            <h2>1.8</h2>
-            <pre></pre>
-        </div>
-        <div id="one-nine" class="result hide">
-            <h2>1.9</h2>
-            <pre></pre>
-        </div>
-        <div id="one-ten" class="result hide">
-            <h2>1.10</h2>
-            <pre></pre>
-        </div>
-        <div id="one-eleven" class="result hide">
-            <h2>1.11</h2>
-            <pre></pre>
-        </div>
-        <div id="one-twelve" class="result hide">
-            <h2>1.12</h2>
-            <pre></pre>
-        </div>
+        <nav class="bar">
+            <ul>
+                <li onclick="select(this)" class="selected tab">1.8</li>
+                <li onclick="select(this)" class="tab">1.9</li>
+                <li onclick="select(this)" class="tab">1.10</li>
+                <li onclick="select(this)" class="tab">1.11</li>
+                <li onclick="select(this)" class="tab">1.12</li>
+            </ul>
+        </nav>
+        <section>
+            <div class="result" data-version="1.8" data-error-table-index="0">
+                <pre></pre>
+            </div>
+            <div class="result hide" data-version="1.9" data-error-table-index="1">
+                <pre></pre>
+            </div>
+            <div class="result hide" data-version="1.10" data-error-table-index="2">
+                <pre></pre>
+            </div>
+            <div class="result hide" data-version="1.11" data-error-table-index="3">
+                <pre></pre>
+            </div>
+            <div class="result hide" data-version="1.12" data-error-table-index="4">
+                <pre></pre>
+            </div>
+        </section>
     </div>
 </body>
 

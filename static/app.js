@@ -8,9 +8,7 @@ document.getElementById("input").onsubmit = function (el, ev) {
     textArea.disabled = true;
     var encodedData = encodeURIComponent(el.target[0].value);
 
-    // why is it called XMLHttpRequest O_o
     var request = new(XMLHttpRequest);
-
     request.open("POST", "/validate");
     request.send("data=" + encodedData);
     request.onreadystatechange = function (ev) {
@@ -27,44 +25,35 @@ document.getElementById("input").onsubmit = function (el, ev) {
 
 // data is a map[string][]err
 function setResults(data) {
-    var versionNum = ["1.8", "1.9", "1.10", "1.11", "1.12"];
-    var versionIds = ["one-eight", "one-nine", "one-ten", "one-eleven", "one-twelve"];
+    var results = document.getElementsByClassName("result");
+    var tables = document.getElementsByClassName("errors");
+    var tabs = document.getElementsByClassName("tab");
 
-    versionIds.forEach(function (version, i) {
-        // This is pretty bad, right?
-        var table = document.getElementById(version + "-errors").children[1];
-        if (data[versionNum[i]].length == 0) {
-            document.getElementById(version + "-button").innerText = versionNum[i] + "✅";
-            table.innerHTML = "None!";
-            document.getElementById(version).children.item(1).innerHTML = document.getElementsByName("data")[0].value;
+    // Set the tab contents of each validation with highlights.
+    [].forEach.call(results, function (result) {
+        var version = result.getAttribute('data-version');
+
+        // no errors for this version
+        var errorIndex = parseInt(result.getAttribute('data-error-table-index'), 10);
+        if (data[version].length == 0) {
+            // There are no errors for this version
+            tables[errorIndex].children[1].innerHTML = "no errors!";
+            tabs[errorIndex].classList.remove("error-color");
+            result.firstElementChild.innerHTML = document.getElementsByName("data")[0].value;
         } else {
-            document.getElementById(version + "-button").innerText = versionNum[i] + "❌";
+            // handle the errors case for this version
             var errors = "";
-            data[versionNum[i]].forEach(function (error) {
+            data[version].forEach(function (error) {
                 errors += "<tr><td>" + error.Error + "</td></tr>";
             });
-            document.getElementById(version).children.item(1).innerHTML = keyToRegexes(data[versionNum[i]][0], document.getElementsByName("data")[0].value);
-            table.innerHTML = errors;
+            tables[errorIndex].children[1].innerHTML = errors;
+            tabs[errorIndex].classList.add("error-color");
+            result.firstElementChild.innerHTML = keyToRegexes(data[version][0], document.getElementsByName("data")[0].value);
         }
     });
 }
 
-function showResult(item) {
-    var resultDiv = document.getElementById(item);
-    var versions = document.getElementsByClassName("result");
-
-    for (var i = 0; i < versions.length; i++) {
-        if (versions[i] === resultDiv) {
-            versions[i].classList.remove("hide");
-            continue;
-        }
-        versions[i].classList.add("hide")
-    }
-}
-
-
-// keyToRegexes takes a key like a.b.c.d and returns 4 regexes
-// /a:/, /  b:/, /    c:/, /      d:/ and runs each one
+// keyToRegexes runs a series of regexes over the input to markup the document when there are validation errors.
 function keyToRegexes(error, value) {
     var keys = error.Key.split(".");
     var v = error.Value;
@@ -104,4 +93,17 @@ spec:
         ports:
         - containerPort: 80
 `
+}
+
+function select(el) {
+    var results = document.getElementsByClassName("result");
+    [].forEach.call(document.getElementsByClassName("tab"), function (tab, i) {
+        if (tab === el) {
+            results[i].classList.remove("hide");
+            tab.classList.add("selected");
+            return;
+        }
+        results[i].classList.add("hide");
+        tab.classList.remove("selected");
+    })
 }

@@ -39,7 +39,15 @@ func (v *Validator) Validate(incoming map[interface{}]interface{}, schema *Schem
 	return v.validate(incoming, schema, []string{})
 }
 
-// validate
+// validate is the meat and potatoes of this entire application.
+// incoming is a list of key/values pairs from a YAML document.
+// schema is the schema we expect incoming to validate against
+// path is the list of keys we have traversed to get to this object (as this object could be anywhere in a YAML document)
+// This function loops through each key doing the following:
+// 1. Checking that the key is a string
+// 2. Checking that the key is an expected key
+// 3. Checking the value is the expected type
+// 4. If an object is encountered then the function is recursive.
 func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schema, path []string) []error {
 	errors := make([]error, 0)
 
@@ -109,14 +117,8 @@ func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schem
 				}
 
 				for _, item := range items {
-					m, ok := item.(map[interface{}]interface{})
-					if !ok {
-						errors = append(errors, NewYamlPathError(tlp, item, NewWrongTypeError(key, "map[interface{}]interface{}", item)))
-						continue
-					}
-					if errs := v.validate(m, schema, tlp); len(errs) > 0 {
+					if errs := v.handleObject(key, item, tlp, schema); len(errs) > 0 {
 						errors = append(errors, errs...)
-						continue
 					}
 				}
 			}
@@ -158,19 +160,21 @@ func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schem
 				}
 				continue
 			}
-
-			// It's an object if it's not a string.
-			d, ok := value.(map[interface{}]interface{})
-			if !ok {
-				errors = append(errors, NewYamlPathError(tlp, value, NewWrongTypeError(key, "map[interface{}]interface{}", value)))
-				continue
-			}
-			if subErrors := v.validate(d, schema, tlp); len(subErrors) > 0 {
-				errors = append(errors, subErrors...)
-				continue
+			if errs := v.handleObject(key, value, tlp, schema); len(errs) > 0 {
+				errors = append(errors, errs...)
 			}
 		}
 	}
 
 	return errors
+}
+
+// handleObject takes a key that has a value that will be of type map[interface{}]interface{}
+// handleObject takes the current path to the key that is being validated and the schema of the object hidden under the value interface.
+func (v *Validator) handleObject(key string, value interface{}, path []string, schema *Schema) []error {
+	object, ok := value.(map[interface{}]interface{})
+	if !ok {
+		return []error{NewYamlPathError(path, value, NewWrongTypeError(key, "map[interface{}]interface{}", value))}
+	}
+	return v.validate(object, schema, path)
 }
