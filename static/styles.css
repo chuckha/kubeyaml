@@ -3,7 +3,7 @@ body {
 }
 
 textarea {
-    width: 450px;
+    width: 375px;
     height: 500px;
     display: block;
     font-family: monospace;
@@ -44,6 +44,21 @@ span.red {
 
 #pond {
     display: flex;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 600px) {
+    #pond {
+        display: block;
+    }
+
+    body {
+        margin: 0;
+    }
+
+    .result-container {
+        padding-top: 10px;
+    }
 }
 
 button[type=submit] {

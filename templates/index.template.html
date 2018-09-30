@@ -3,6 +3,7 @@
 <head>
     <title>Kubernetes YAML Validation</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
@@ -24,7 +25,8 @@
                 <button type="submit">Validate</button>
             </form>
         </div>
-        <div>
+
+        <div class="error-tables">
             <table class="errors">
                 <thead>
                     <tr>
@@ -71,36 +73,37 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="result-container">
+            <nav class="bar">
+                <ul>
+                    <li onclick="select(this)" class="selected tab">1.8</li>
+                    <li onclick="select(this)" class="tab">1.9</li>
+                    <li onclick="select(this)" class="tab">1.10</li>
+                    <li onclick="select(this)" class="tab">1.11</li>
+                    <li onclick="select(this)" class="tab">1.12</li>
+                </ul>
+            </nav>
+            <section>
+                <div class="result" data-version="1.8" data-error-table-index="0">
+                    <pre></pre>
+                </div>
+                <div class="result hide" data-version="1.9" data-error-table-index="1">
+                    <pre></pre>
+                </div>
+                <div class="result hide" data-version="1.10" data-error-table-index="2">
+                    <pre></pre>
+                </div>
+                <div class="result hide" data-version="1.11" data-error-table-index="3">
+                    <pre></pre>
+                </div>
+                <div class="result hide" data-version="1.12" data-error-table-index="4">
+                    <pre></pre>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <div class="result-container">
-        <nav class="bar">
-            <ul>
-                <li onclick="select(this)" class="selected tab">1.8</li>
-                <li onclick="select(this)" class="tab">1.9</li>
-                <li onclick="select(this)" class="tab">1.10</li>
-                <li onclick="select(this)" class="tab">1.11</li>
-                <li onclick="select(this)" class="tab">1.12</li>
-            </ul>
-        </nav>
-        <section>
-            <div class="result" data-version="1.8" data-error-table-index="0">
-                <pre></pre>
-            </div>
-            <div class="result hide" data-version="1.9" data-error-table-index="1">
-                <pre></pre>
-            </div>
-            <div class="result hide" data-version="1.10" data-error-table-index="2">
-                <pre></pre>
-            </div>
-            <div class="result hide" data-version="1.11" data-error-table-index="3">
-                <pre></pre>
-            </div>
-            <div class="result hide" data-version="1.12" data-error-table-index="4">
-                <pre></pre>
-            </div>
-        </section>
-    </div>
 </body>
 
 <script src="/static/app.js"></script>
