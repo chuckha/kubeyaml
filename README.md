@@ -46,8 +46,6 @@
 
 #### Be quiet and rely on exit codes
 
-Note: this is broken
-
 ```
 `cat test-yaml/pod.yaml | kubeyaml -versions 1.12 -silent`
 ```
