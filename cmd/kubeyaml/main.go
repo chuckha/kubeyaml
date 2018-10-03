@@ -82,8 +82,10 @@ func main() {
 
 		errors := validator.Validate(i.Data, schema)
 		if len(errors) > 0 {
-			fmt.Println(string(redbg(errors[0].Error())))
-			fmt.Println(colorize(errors[0], input.Bytes()))
+			if !*opts.silent {
+				fmt.Println(string(redbg(errors[0].Error())))
+				fmt.Println(colorize(errors[0], input.Bytes()))
+			}
 			exitCode = 1
 		}
 	}

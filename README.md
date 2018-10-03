@@ -44,6 +44,15 @@
 
 `cat test-yaml/pod.yaml | kubeyaml -versions 1.11,1.12`
 
+#### Be quiet and rely on exit codes
+
+Note: this is broken
+
+```
+`cat test-yaml/pod.yaml | kubeyaml -versions 1.12 -silent`
+```
+
+
 # Infra notes for kubeyaml.com
 
 ## Deploying
