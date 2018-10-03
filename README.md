@@ -1,21 +1,50 @@
-# Validate k8s documents
+# kubeyaml
 
-provide some yaml where the top level must have Kind and ApiVersion. The rest can be inferred
+## Webserver
+
+### Docker
+
+1. `docker run --network host registry.hub.docker.com/chuckdha/kubeyaml:latest`
+0. Visit http://localhost:9000
+
+### Manually
+
+#### Requirements
+
+* Go 1.11
+* Go < 1.11 will be like any other go project without vendor or dependency management
+
+1. `make kubeyaml`
+0. `./kubeyaml`
+0. Visit http://localhost:9000
 
 
-reading yaml and getting a list of keys and the associated values, a map[string]interface{}
+## CLI
 
-Already know all vanilla k8s schemas
+### Installing
 
-look up the schema with the kind/version, a string
+#### Requirements
 
-(a schema, a map[string]interface{})
+* Go 1.11
+* Probably other versions of Go. Haven't tested.
 
-for key, value in map[string]interface{}
+1. `go get github.com/chuckha/kubeyaml/cmd/kubeyaml`
 
-    if key not in schema: explode
-    if value is not the expected type: explode
-    if the type of key exists in the schema
+### Examples
+
+#### Validate against recent versions of kubernetes
+
+`cat test-yaml/deployment.yaml | kubeyaml`
+
+#### Validate against one recent version of kubernetes
+
+`cat test-yaml/deployment.yaml | kubeyaml -versions 1.12`
+
+#### Validate against two recent versions of kubernetes
+
+`cat test-yaml/pod.yaml | kubeyaml -versions 1.11,1.12`
+
+# Infra notes for kubeyaml.com
 
 ## Deploying
 
@@ -31,7 +60,7 @@ for key, value in map[string]interface{}
 3. `IMAGE_TAG=staging ./scripts/push-image.sh`
 4. `service kubeyaml-staging restart`
 
-## Updating schemas
+# Updating schemas
 
 1. Run `go run scripts/update-schemas.go`
 
