@@ -1,9 +1,9 @@
 [Unit]
-Description=kube-validate validates kubernetes yaml
+Description=kubeyaml validates kubernetes yaml
 
 [Service]
-ExecStartPre=/usr/bin/docker pull chuckdha/kube-validate:staging
-ExecStart=/usr/bin/docker run --network host chuckdha/kube-validate:staging -port 8000
+ExecStartPre=/usr/bin/docker pull chuckdha/kubeyaml:staging
+ExecStart=/usr/bin/docker run --network host chuckdha/kubeyaml:staging -port 8000
 Restart=always
 
 [Install]

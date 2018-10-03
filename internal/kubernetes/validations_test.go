@@ -3,7 +3,7 @@ package kubernetes_test
 import (
 	"testing"
 
-	"github.com/chuckha/kube-validate/internal/kubernetes"
+	"github.com/chuckha/kubeyaml/internal/kubernetes"
 )
 
 type resolver struct {

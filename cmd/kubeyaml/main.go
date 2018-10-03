@@ -11,7 +11,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/chuckha/kube-validate/internal/kubernetes"
+	"github.com/chuckha/kubeyaml/internal/kubernetes"
 )
 
 /*

@@ -19,17 +19,17 @@ for key, value in map[string]interface{}
 
 ## Deploying
 
-1. Make the binary with `make kube-validate`
+1. Make the binary with `make kubeyaml`
 2. Build the image with `./scripts/build-image.sh`
 3. Push the image with `./scripts/push-image.sh`
-4. On the server, restart the kube-validate service which will pull and restart the image.
+4. On the server, restart the kubeyaml service which will pull and restart the image.
 
 ### Staging
 
 1. Make the binary
 2. `IMAGE_TAG=staging ./scripts/build-image.sh`
 3. `IMAGE_TAG=staging ./scripts/push-image.sh`
-4. `service kube-validate-staging restart`
+4. `service kubeyaml-staging restart`
 
 ## Updating schemas
 

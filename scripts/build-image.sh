@@ -2,7 +2,7 @@
 
 set -o errexit
 
-IMAGE_NAME=${IMAGE_NAME:-chuckdha/kube-validate}
+IMAGE_NAME=${IMAGE_NAME:-chuckdha/kubeyaml}
 IMAGE_TAG=${IMAGE_TAG:-latest}
 
 go test ./...

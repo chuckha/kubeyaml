@@ -1,7 +1,7 @@
-kube-validate:
-	GOOS=linux go build -o kube-validate ./cmd/server
+kubeyaml:
+	GOOS=linux go build -o kubeyaml ./cmd/server
 
 .PHONY: clean
 
 clean:
-	rm -f kube-validate
+	rm -f kubeyaml
