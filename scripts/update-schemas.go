@@ -1,24 +1,32 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 )
 
+const templateFormat = `package data
+
+func (s *StaticFiles) %s() []byte {
+	return []byte(` + "`%s`" + `)
+}
+`
+
 // Run this from the top level dir
 func main() {
-	releases := []string{
-		"1.8",
-		"1.9",
-		"1.10",
-		"1.11",
-		"1.12",
+	releases := map[string]string{
+		"OneEight":  "1.8",
+		"OneNine":   "1.9",
+		"OneTen":    "1.10",
+		"OneEleven": "1.11",
+		"OneTwelve": "1.12",
 	}
 	urlFmt := "https://raw.githubusercontent.com/kubernetes/kubernetes/release-%s/api/openapi-spec/swagger.json"
 
-	for _, release := range releases {
+	for funcName, release := range releases {
 		r, err := http.Get(fmt.Sprintf(urlFmt, release))
 		if err != nil {
 			fmt.Printf("failed to get schemas for release %v: %v\n", release, err)
@@ -43,5 +51,13 @@ func main() {
 			fmt.Printf("error writing file release-%s: %v", release, err)
 			continue
 		}
+		schema = bytes.Replace(schema, []byte("`"), []byte("` + \"`\" + `"), -1)
+		fileData := fmt.Sprintf(templateFormat, funcName, schema)
+
+		if err := ioutil.WriteFile(fmt.Sprintf("%s/internal/kubernetes/data/swagger_%s.go", outDir, funcName), []byte(fileData), os.FileMode(uint32(0644))); err != nil {
+			fmt.Printf("error writing go file for release-%s: %v", release, err)
+			continue
+		}
+
 	}
 }

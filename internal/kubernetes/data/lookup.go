@@ -1,0 +1,23 @@
+package data
+
+import "fmt"
+
+type StaticFiles struct{}
+
+// Swagger is a fairly meh function. It's poorly named and tied to the update-schemas file.
+func (s *StaticFiles) Swagger(version string) []byte {
+	switch version {
+	case "1.8":
+		return s.OneEight()
+	case "1.9":
+		return s.OneNine()
+	case "1.10":
+		return s.OneTen()
+	case "1.11":
+		return s.OneEleven()
+	case "1.12":
+		return s.OneTwelve()
+	default:
+		panic(fmt.Sprintf("unknown version %v", version))
+	}
+}

@@ -3,8 +3,9 @@ package kubernetes
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"strings"
+
+	"github.com/chuckha/kubeyaml/internal/kubernetes/data"
 )
 
 // Resolver looks up a schema based on the schema key.
@@ -15,13 +16,9 @@ type Resolver struct {
 
 // NewResolver loads a swagger file, keeps track of the version and returns an instantiated resolver.
 func NewResolver(version string) (*Resolver, error) {
-	file := fmt.Sprintf("internal/kubernetes/data/swagger-%v.json", version)
-	b, err := ioutil.ReadFile(file)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file %v: %v", file, err)
-	}
+	staticFiles := &data.StaticFiles{}
 	swagger := &Swagger{}
-	if err := json.Unmarshal(b, swagger); err != nil {
+	if err := json.Unmarshal(staticFiles.Swagger(version), swagger); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal swagger file: %v", err)
 	}
 
