@@ -4,7 +4,7 @@
 
 ### Docker
 
-1. `docker run --network host registry.hub.docker.com/chuckdha/kubeyaml:latest`
+0. `docker run --network host registry.hub.docker.com/chuckdha/kubeyaml:latest`
 0. Visit http://localhost:9000
 
 ### Manually
@@ -14,8 +14,8 @@
 * Go 1.11
 * Go < 1.11 will be like any other go project without vendor or dependency management
 
-1. `make kubeyaml`
-0. `./kubeyaml`
+1. `make kubeyaml-server`
+0. `./kubeyaml-server`
 0. Visit http://localhost:9000
 
 

@@ -1,8 +1,11 @@
+docker-server:
+	GOOS=linux go build -o kubeyaml-server ./cmd/server
+
 kubeyaml:
-	GOOS=linux go build -o kubeyaml ./cmd/kubeyaml
+	go build -o kubeyaml ./cmd/kubeyaml
 
 kubeyaml-server:
-	GOOS=linux go build -o kubeyaml-server ./cmd/server
+	go build -o kubeyaml-server ./cmd/server
 
 .PHONY: clean
 
