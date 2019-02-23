@@ -5,7 +5,7 @@ func (s *StaticFiles) OneTwelve() []byte {
   "swagger": "2.0",
   "info": {
    "title": "Kubernetes",
-   "version": "v1.12.2"
+   "version": "v1.12.6"
   },
   "paths": {
    "/api/": {

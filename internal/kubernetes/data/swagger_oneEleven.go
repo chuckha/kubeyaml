@@ -5,7 +5,7 @@ func (s *StaticFiles) OneEleven() []byte {
   "swagger": "2.0",
   "info": {
    "title": "Kubernetes",
-   "version": "v1.11.4"
+   "version": "v1.11.8"
   },
   "paths": {
    "/api/": {
@@ -81771,7 +81771,7 @@ func (s *StaticFiles) OneEleven() []byte {
       "type": "boolean"
      },
      "progressDeadlineSeconds": {
-      "description": "The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. This is not set by default.",
+      "description": "The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. This is set to the max value of int32 (i.e. 2147483647) by default, which means \"no deadline\".",
       "type": "integer",
       "format": "int32"
      },

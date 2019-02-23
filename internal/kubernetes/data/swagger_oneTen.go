@@ -5,7 +5,7 @@ func (s *StaticFiles) OneTen() []byte {
   "swagger": "2.0",
   "info": {
    "title": "Kubernetes",
-   "version": "v1.10.9"
+   "version": "v1.10.14"
   },
   "paths": {
    "/api/": {

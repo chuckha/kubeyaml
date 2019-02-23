@@ -34,7 +34,7 @@ func main() {
 	// Parse flags
 	fs.Parse(os.Args[1:])
 
-	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12"}
+	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12", "1.13"}
 	validators := make([]validator, len(versions))
 	for i, version := range versions {
 		resolver, err := kubernetes.NewResolver(version)
@@ -122,7 +122,10 @@ func (s *server) favicon(w http.ResponseWriter, r *http.Request) {
 func (s *server) index(w http.ResponseWriter, r *http.Request) {
 	// TODO generate html based on versions maybe
 	s.logRequest("index", r)
-	if err := s.templates["index"].Execute(w, nil); err != nil {
+	if err := s.templates["index"].Execute(w, indexTemplateData{
+		Validators: s.validators,
+		Selected:   "1.8",
+	}); err != nil {
 		http.Error(w, "failed to execute index template", http.StatusInternalServerError)
 		return
 	}
@@ -216,4 +219,9 @@ func loadTemplates() (map[string]*template.Template, error) {
 		return nil
 	})
 	return templates, nil
+}
+
+type indexTemplateData struct {
+	Validators []validator
+	Selected   string
 }
