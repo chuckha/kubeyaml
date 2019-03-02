@@ -65,7 +65,7 @@
 1. Make the binary
 2. `IMAGE_TAG=staging ./scripts/build-image.sh`
 3. `IMAGE_TAG=staging ./scripts/push-image.sh`
-4. `service kubeyaml-staging restart`
+4. `service kube-validate-staging restart`
 
 # Updating schemas
 
