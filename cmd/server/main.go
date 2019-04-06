@@ -4,14 +4,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
-	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/chuckha/kubeyaml/internal/kubernetes"
@@ -53,13 +50,7 @@ func main() {
 	// TODO associate this with the resolver and expose through the validator.
 	gf := kubernetes.NewAPIKeyer("io.k8s.api", ".k8s.io")
 
-	t, err := loadTemplates()
-	if err != nil {
-		fmt.Printf("failed to load templates: %v\n", err)
-		os.Exit(1)
-	}
 	s := &server{
-		templates:  t,
 		logger:     &log{os.Stdout},
 		validators: validators,
 		loader:     loader,
@@ -69,7 +60,6 @@ func main() {
 	mux.HandleFunc("/validate", s.validate)
 	mux.HandleFunc("/favicon.ico", s.favicon)
 	mux.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("static"))))
-	mux.HandleFunc("/", s.index)
 	fmt.Printf("listening on port :%s\n", sa.Port)
 	http.ListenAndServe(":"+sa.Port, mux)
 }
@@ -108,7 +98,6 @@ type groupFinder interface {
 }
 
 type server struct {
-	templates map[string]*template.Template
 	logger
 	validators []validator
 	loader     loader
@@ -119,19 +108,9 @@ func (s *server) favicon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "favicon.ico")
 }
 
-func (s *server) index(w http.ResponseWriter, r *http.Request) {
-	// TODO generate html based on versions maybe
-	s.logRequest("index", r)
-	if err := s.templates["index"].Execute(w, indexTemplateData{
-		Validators: s.validators,
-		Selected:   "1.8",
-	}); err != nil {
-		http.Error(w, "failed to execute index template", http.StatusInternalServerError)
-		return
-	}
-}
-
 func (s *server) validate(w http.ResponseWriter, r *http.Request) {
+	// TODO: disable for prod
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	s.logRequest("validate", r)
 
 	if r.Method != "POST" {
@@ -195,33 +174,4 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) logRequest(method string, r *http.Request) {
 	s.logger.Infof("[%s]: %s %s\n", method, r.Method, r.URL.Path)
-}
-
-func loadTemplates() (map[string]*template.Template, error) {
-	templates := make(map[string]*template.Template)
-	filepath.Walk("templates", func(p string, info os.FileInfo, err error) error {
-		if err != nil {
-			return fmt.Errorf("walkfn received an error: %v", err)
-		}
-
-		if info.IsDir() {
-			return nil
-		}
-
-		if strings.HasSuffix(p, templateSuffix) {
-			tmpl, err := template.ParseFiles(p)
-			if err != nil {
-				return fmt.Errorf("failed to parse template %q: %v", p, err)
-			}
-			templates[path.Base(strings.TrimSuffix(p, templateSuffix))] = tmpl
-		}
-
-		return nil
-	})
-	return templates, nil
-}
-
-type indexTemplateData struct {
-	Validators []validator
-	Selected   string
 }

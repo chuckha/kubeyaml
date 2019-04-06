@@ -1,0 +1,41 @@
+{
+  "name": "kubeyaml",
+  "version": "1.0.0",
+  "description": "validating kubernetes objects",
+  "main": "src/index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "bulma": "^0.7.4",
+    "css-loader": "^2.1.1",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "node-sass": "^4.11.0",
+    "null-loader": "^0.1.1",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env"
+    ]
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/webpack --mode development",
+    "start": "npm run build -- --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chuckha/scott-and-sophie.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chuckha/scott-and-sophie/issues"
+  },
+  "homepage": "https://github.com/chuckha/scott-and-sophie#readme"
+}
