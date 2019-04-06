@@ -107,7 +107,7 @@ document.getElementById('input').addEventListener('submit', function(evt) {
     var encodedData = encodeURIComponent(textArea.value);
 
     var request = new(XMLHttpRequest);
-    request.open("POST", "http://localhost:9000/validate");
+    request.open("POST", "/validate");
     request.send("data=" + encodedData);
     request.onreadystatechange = function (ev) {
         if (ev.target.readyState === 4) {
