@@ -8,3 +8,18 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
+
+
+[Unit]
+Description=kubeyaml validates kubernetes yaml
+
+[Service]
+WorkingDirectory=/root
+ExecStartPre=/usr/bin/docker pull registry.hub.docker.com/chuckdha/kubeyaml-web:latest
+ExecStartPre=/usr/bin/docker pull registry.hub.docker.com/chuckdha/kubeyaml-backend:latest
+ExecStart=/usr/local/bin/docker-compose up
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
