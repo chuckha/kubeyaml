@@ -3,7 +3,7 @@ Description=kubeyaml validates kubernetes yaml
 
 [Service]
 ExecStartPre=/usr/bin/docker pull chuckdha/kubeyaml:staging
-ExecStart=/usr/bin/docker run --network host chuckdha/kubeyaml:staging -port 8000
+ExecStart=/usr/bin/docker-comp run --network host chuckdha/kubeyaml:staging -port 8000
 Restart=always
 
 [Install]

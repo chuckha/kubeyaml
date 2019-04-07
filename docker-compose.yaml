@@ -1,12 +1,11 @@
 version: '3'
 services:
   web:
-    build: .
+    image: registry.hub.docker.com/chuckdha/kubeyaml-web:latest
     ports:
     - "8000:80"
     links:
     - backend
   backend:
-    build:
-      dockerfile: Dockerfile.backend
-      context: .
+    image: registry.hub.docker.com/chuckdha/kubeyaml-backend:latest
+
