@@ -11,7 +11,7 @@ import (
 func main() {
 	loader := kubernetes.NewLoader()
 	gf := kubernetes.NewAPIKeyer("io.k8s.api", ".k8s.io")
-	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12"}
+	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14"}
 
 	// Read the input
 	reader := bufio.NewReader(os.Stdin)
