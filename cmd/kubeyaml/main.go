@@ -43,7 +43,7 @@ func (o *options) Validate() error {
 func main() {
 	opts := &options{}
 	validate := flag.NewFlagSet("validate", flag.ExitOnError)
-	opts.versions = validate.String("versions", "1.8,1.9,1.10,1.11,1.12,1.13", "comma separated list of kubernetes versions to validate against")
+	opts.versions = validate.String("versions", "1.8,1.9,1.10,1.11,1.12,1.13,1.14", "comma separated list of kubernetes versions to validate against")
 	opts.silent = validate.Bool("silent", false, "if true, kubeyaml will not print any output")
 	validate.Parse(os.Args[1:])
 	err := opts.Validate()

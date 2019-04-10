@@ -31,7 +31,7 @@ func main() {
 	// Parse flags
 	fs.Parse(os.Args[1:])
 
-	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12", "1.13"}
+	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14"}
 	validators := make([]validator, len(versions))
 	for i, version := range versions {
 		resolver, err := kubernetes.NewResolver(version)
