@@ -49,14 +49,14 @@ func main() {
 			continue
 		}
 
-		if err := ioutil.WriteFile(fmt.Sprintf("%s/internal/kubernetes/data/swagger-%s.json", outDir, release), schema, os.FileMode(uint32(0644))); err != nil {
+		if err := ioutil.WriteFile(fmt.Sprintf("%s/pkg/kubernetes/data/swagger-%s.json", outDir, release), schema, os.FileMode(uint32(0644))); err != nil {
 			fmt.Printf("error writing file release-%s: %v", release, err)
 			continue
 		}
 		schema = bytes.Replace(schema, []byte("`"), []byte("` + \"`\" + `"), -1)
 		fileData := fmt.Sprintf(templateFormat, funcName, schema)
 
-		if err := ioutil.WriteFile(fmt.Sprintf("%s/internal/kubernetes/data/swagger_%s.go", outDir, funcName), []byte(fileData), os.FileMode(uint32(0644))); err != nil {
+		if err := ioutil.WriteFile(fmt.Sprintf("%s/pkg/kubernetes/data/swagger_%s.go", outDir, funcName), []byte(fileData), os.FileMode(uint32(0644))); err != nil {
 			fmt.Printf("error writing go file for release-%s: %v", release, err)
 			continue
 		}

@@ -3,7 +3,7 @@ package kubernetes_test
 import (
 	"testing"
 
-	"github.com/chuckha/kubeyaml/internal/kubernetes"
+	"github.com/chuckha/kubeyaml/pkg/kubernetes"
 )
 
 type resolver struct {

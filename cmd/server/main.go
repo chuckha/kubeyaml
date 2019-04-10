@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/chuckha/kubeyaml/internal/kubernetes"
+	"github.com/chuckha/kubeyaml/pkg/kubernetes"
 )
 
 const (

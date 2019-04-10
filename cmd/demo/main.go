@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/chuckha/kubeyaml/internal/kubernetes"
+	"github.com/chuckha/kubeyaml/pkg/kubernetes"
 )
 
 func main() {
