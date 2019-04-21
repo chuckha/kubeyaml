@@ -5,7 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // Input is the top level YAML document the system receives.

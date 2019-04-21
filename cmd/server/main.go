@@ -148,8 +148,30 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 	data := strings.NewReader(v.Get("data"))
 	i, err := s.loader.Load(data)
 	if err != nil {
-		s.logger.Infof("error loading body: %v\n", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		switch err.(type) {
+		case *kubernetes.RequiredKeyNotFoundError:
+		case *kubernetes.YamlPathError:
+		default:
+			s.logger.Infof("error loading body with non user error: %v\n", err)
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		errs := make(map[string][]error)
+		for _, v := range s.validators {
+			errs[v.Version()] = []error{err}
+		}
+
+		out, err := json.Marshal(errs)
+		if err != nil {
+			s.logger.Infof("error marshalling errors: %v\n", err)
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+
+		if _, err := w.Write(out); err != nil {
+			s.logger.Infof("error writing response body: %v\n", err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
 		return
 	}
 	defer r.Body.Close()

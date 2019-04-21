@@ -16,6 +16,17 @@ func NewRequiredKeyNotFoundError(key string) error {
 	return &RequiredKeyNotFoundError{key: key}
 }
 
+// MarshalJSON extracts the error since error is an interface
+func (r *RequiredKeyNotFoundError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Key   string
+		Error string
+	}{
+		Key:   r.key,
+		Error: "Missing required top-level key: " + r.key,
+	})
+}
+
 // Error implements the error interface
 func (r *RequiredKeyNotFoundError) Error() string {
 	return fmt.Sprintf("key %q not found", r.key)
