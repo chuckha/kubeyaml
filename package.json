@@ -24,6 +24,7 @@
     ]
   },
   "scripts": {
+    "build-prod": "./node_modules/.bin/webpack --mode production",
     "build": "./node_modules/.bin/webpack --mode development",
     "start": "npm run build -- --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
