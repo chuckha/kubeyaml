@@ -107,7 +107,7 @@ document.getElementById('input').addEventListener('submit', function(evt) {
     var encodedData = encodeURIComponent(textArea.value);
 
     var request = new(XMLHttpRequest);
-    request.open("POST", "/validate");
+    request.open("POST", getBackendUrl() + "/validate");
     request.send("data=" + encodedData);
     request.onreadystatechange = function (ev) {
         if (ev.target.readyState === 4) {
@@ -119,3 +119,11 @@ document.getElementById('input').addEventListener('submit', function(evt) {
     // prevent the default behavior of navigating to the action (don't load a new page)
     return false;
 });
+
+function getBackendUrl() {
+    if (window.location.protocol === 'file:') {
+        // dev version assumes CORS is enabled
+        return 'http://localhost:9000';
+    }
+    return '';
+}

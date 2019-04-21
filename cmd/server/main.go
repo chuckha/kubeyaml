@@ -19,7 +19,8 @@ const (
 )
 
 type ServerArgs struct {
-	Port string
+	Port        string
+	Development bool
 }
 
 func main() {
@@ -27,6 +28,7 @@ func main() {
 	fs := flag.NewFlagSet("server", flag.ExitOnError)
 	sa := &ServerArgs{}
 	fs.StringVar(&sa.Port, "port", "9000", "the port for the server to listen on")
+	fs.BoolVar(&sa.Development, "dev", false, "enable certain features when developing locally")
 
 	// Parse flags
 	fs.Parse(os.Args[1:])
@@ -55,12 +57,16 @@ func main() {
 		validators: validators,
 		loader:     loader,
 		finder:     gf,
+		dev:        sa.Development,
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/validate", s.validate)
 	mux.HandleFunc("/favicon.ico", s.favicon)
 	mux.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("static"))))
 	fmt.Printf("listening on port :%s\n", sa.Port)
+	if sa.Development {
+		fmt.Println("development mode enabled")
+	}
 	http.ListenAndServe(":"+sa.Port, mux)
 }
 
@@ -102,6 +108,7 @@ type server struct {
 	validators []validator
 	loader     loader
 	finder     groupFinder
+	dev        bool
 }
 
 func (s *server) favicon(w http.ResponseWriter, r *http.Request) {
@@ -109,8 +116,11 @@ func (s *server) favicon(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) validate(w http.ResponseWriter, r *http.Request) {
-	// TODO: disable for prod
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// Enable CORS in dev mode
+	if s.dev {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+	}
+
 	s.logRequest("validate", r)
 
 	if r.Method != "POST" {
@@ -120,7 +130,7 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		s.logger.Infof("error loading body: %v\n", err)
+		s.logger.Infof("error reading body: %v\n", err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
