@@ -8,6 +8,10 @@ import (
 	"github.com/chuckha/kubeyaml/internal/kubernetes"
 )
 
+const (
+	defaultActiveTab = "1.14"
+)
+
 func main() {
 	f, err := os.Create("dist/index.html")
 	if err != nil {
@@ -20,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	versions := []string{"1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14"}
+	versions := []string{"1.14", "1.13", "1.12", "1.11"}
 	validators := make([]validator, len(versions))
 	for i, version := range versions {
 		resolver, err := kubernetes.NewResolver(version)
@@ -33,7 +37,7 @@ func main() {
 
 	if err := t.Execute(f, indexTemplateData{
 		Validators: validators,
-		Selected:   "1.8",
+		Selected:   defaultActiveTab,
 	}); err != nil {
 		panic(err)
 	}
