@@ -41,55 +41,64 @@ func (o *options) Validate() error {
 }
 
 func main() {
+	if err := run(os.Stdin, os.Stdout, os.Args[1:]...); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+}
+
+func run(in io.Reader, out io.Writer, args ...string) error {
 	opts := &options{}
 	validate := flag.NewFlagSet("validate", flag.ExitOnError)
-	opts.versions = validate.String("versions", "1.14,1.13,1.12,1.11,1.10,1.9,1.8", "comma separated list of kubernetes versions to validate against")
+	opts.versions = validate.String("versions", "1.14,1.13,1.12,1.11,1.10,1.9", "comma separated list of kubernetes versions to validate against")
 	opts.silent = validate.Bool("silent", false, "if true, kubeyaml will not print any output")
-	validate.Parse(os.Args[1:])
+	validate.Parse(args)
 	err := opts.Validate()
 	if err != nil {
-		fmt.Println("unable to validate options input")
-		os.Exit(1)
+		return &mainError{"unable to validate options input", err}
 	}
 
 	loader := kubernetes.NewLoader()
 	gf := kubernetes.NewAPIKeyer("io.k8s.api", ".k8s.io")
 
 	// Read the input
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(in)
 	var input bytes.Buffer
 	readerCopy := io.TeeReader(reader, &input)
 	i, err := loader.Load(readerCopy)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return &mainError{input.String(), err}
 	}
-	exitCode := 0
 
+	aggregatedErrors := &aggErr{}
 	for _, version := range opts.Versions {
 		reslover, err := kubernetes.NewResolver(version)
 		if err != nil {
-			fmt.Printf("%s: %v\n", version, err)
+			aggregatedErrors.Add(fmt.Errorf("%s: %v", version, err))
 			continue
 		}
 		validator := kubernetes.NewValidator(reslover)
 
 		schema, err := reslover.Resolve(gf.APIKey(i.APIVersion, i.Kind))
 		if err != nil {
-			fmt.Printf("%s: %v\n", version, err)
+			aggregatedErrors.Add(fmt.Errorf("%s: %v", version, err))
 			continue
+		}
+
+		if len(aggregatedErrors.errors) > 0 {
+			return aggregatedErrors
 		}
 
 		errors := validator.Validate(i.Data, schema)
 		if len(errors) > 0 {
 			if !*opts.silent {
-				fmt.Println(string(redbg(errors[0].Error())))
-				fmt.Println(colorize(errors[0], input.Bytes()))
+				fmt.Fprintln(out, string(redbg(errors[0].Error())))
+				fmt.Fprintln(out, colorize(errors[0], input.Bytes()))
 			}
-			exitCode = 1
+			return &aggErr{errors}
 		}
 	}
-	os.Exit(exitCode)
+	return nil
 }
 
 func colorize(err error, value []byte) string {
@@ -117,4 +126,28 @@ func red(in string) []byte {
 }
 func redbg(in string) []byte {
 	return []byte(fmt.Sprintf("\x1b[97;1m\x1b[41;1m%s\x1b[0m", in))
+}
+
+type mainError struct {
+	message string
+	err     error
+}
+
+func (m *mainError) Error() string {
+	return fmt.Sprintf("%s\n%s", m.message, m.err.Error())
+}
+
+type aggErr struct {
+	errors []error
+}
+
+func (a *aggErr) Error() string {
+	out := []string{}
+	for _, err := range a.errors {
+		out = append(out, err.Error())
+	}
+	return strings.Join(out, "\n")
+}
+func (a *aggErr) Add(err error) {
+	a.errors = append(a.errors, err)
 }
