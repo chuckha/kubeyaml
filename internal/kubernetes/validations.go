@@ -117,6 +117,12 @@ func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schem
 				}
 
 				for _, item := range items {
+					if len(schema.Required) > 0 {
+						if errs := resolveRequiredFields(key, item, schema); len(errs) > 0 {
+							errors = append(errors, errs...)
+						}
+					}
+
 					if errs := v.handleObject(key, item, tlp, schema); len(errs) > 0 {
 						errors = append(errors, errs...)
 					}
@@ -130,6 +136,12 @@ func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schem
 				// fmt.Println(key, property)
 				errors = append(errors, NewYamlPathError(tlp, property.Reference, err))
 				continue
+			}
+
+			if len(schema.Required) > 0 {
+				if errs := resolveRequiredFields(key, value, schema); len(errs) > 0 {
+					errors = append(errors, errs...)
+				}
 			}
 
 			// Bail if the object reference is a type rename
@@ -177,4 +189,31 @@ func (v *Validator) handleObject(key string, value interface{}, path []string, s
 		return []error{NewYamlPathError(path, value, NewWrongTypeError(key, "map[interface{}]interface{}", value))}
 	}
 	return v.validate(object, schema, path)
+}
+
+// objectValue will be a map[interface{}]interface{}
+func resolveRequiredFields(key string, objectValue interface{}, schema *Schema) []error {
+	mapvalues, ok := objectValue.(map[interface{}]interface{})
+	if !ok {
+		return []error{NewWrongTypeError(key, "map[interface{}]interface{}", objectValue)}
+	}
+	requiredKeys := map[string]bool{}
+	for _, k := range schema.Required {
+		requiredKeys[k] = false
+	}
+	for key := range mapvalues {
+		realKey, ok := key.(string)
+		if !ok {
+			return []error{NewKeyNotStringError(key)}
+		}
+		if _, ok := requiredKeys[realKey]; ok {
+			requiredKeys[realKey] = true
+		}
+	}
+	for key, found := range requiredKeys {
+		if !found {
+			return []error{NewRequiredKeyNotFoundError(key)}
+		}
+	}
+	return []error{}
 }

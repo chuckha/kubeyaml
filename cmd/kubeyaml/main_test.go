@@ -12,8 +12,12 @@ func TestIntegrations(t *testing.T) {
 		filename       string
 		shouldValidate bool
 	}{
-		{filename: "issue-6.yaml", shouldValidate: true},
+		// missing a selector.
+		{filename: "issue-6.yaml", shouldValidate: false},
+		// volume list item is lacking a name
 		{filename: "issue-8.yaml", shouldValidate: false},
+		// type Airflow is invalid. But we don't validate data
+		{filename: "issue-9.yaml", shouldValidate: true},
 	}
 
 	for _, tc := range testcases {
