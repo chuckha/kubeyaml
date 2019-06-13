@@ -23,7 +23,7 @@ func (r *RequiredKeyNotFoundError) MarshalJSON() ([]byte, error) {
 		Error string
 	}{
 		Key:   r.key,
-		Error: "Missing required top-level key: " + r.key,
+		Error: "Missing required key: " + r.key,
 	})
 }
 

@@ -145,8 +145,13 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract the yaml and load it
-	data := strings.NewReader(v.Get("data"))
-	i, err := s.loader.Load(data)
+	data := v.Get("data")
+	if len(data) == 0 {
+		// Ignore empty requests
+		return
+	}
+	datar := strings.NewReader(data)
+	i, err := s.loader.Load(datar)
 	if err != nil {
 		switch err.(type) {
 		case *kubernetes.RequiredKeyNotFoundError:

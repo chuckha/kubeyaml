@@ -94,10 +94,12 @@ spec:
 }
 document.getElementById("example").addEventListener("click", example);
 document.getElementById('input').addEventListener('submit', function(evt) {
-    console.log(evt);
     evt.preventDefault();
     var textArea = document.getElementsByName("data")[0];
-    console.log(textArea)
+    if (textArea.value === "") {
+        // TODO blink the text area?
+        return
+    }
 
     // if (el.target[0].value.indexOf("\t") >= 0) {
     // where to put this error...
