@@ -38,7 +38,7 @@ func (l *Loader) Load(reader io.Reader) (*Input, error) {
 
 	val, ok := incoming["apiVersion"]
 	if !ok {
-		return nil, NewRequiredKeyNotFoundError("apiVersion")
+		return nil, NewRequiredKeyNotFoundError("apiVersion", []string{"apiVersion"})
 	}
 
 	apiVersion, ok := val.(string)
@@ -48,7 +48,7 @@ func (l *Loader) Load(reader io.Reader) (*Input, error) {
 
 	val, ok = incoming["kind"]
 	if !ok {
-		return nil, NewRequiredKeyNotFoundError("kind")
+		return nil, NewRequiredKeyNotFoundError("kind", []string{"kind"})
 	}
 
 	kind, ok := val.(string)

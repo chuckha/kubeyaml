@@ -8,12 +8,13 @@ import (
 
 // RequiredKeyNotFoundError is an error representing a required schema key that is missing
 type RequiredKeyNotFoundError struct {
-	key string
+	key  string
+	path []string
 }
 
 // NewRequiredKeyNotFoundError returns a new RequiredKeyNotFoundError
-func NewRequiredKeyNotFoundError(key string) error {
-	return &RequiredKeyNotFoundError{key: key}
+func NewRequiredKeyNotFoundError(key string, path []string) error {
+	return &RequiredKeyNotFoundError{key: key, path: path}
 }
 
 // MarshalJSON extracts the error since error is an interface
@@ -22,7 +23,7 @@ func (r *RequiredKeyNotFoundError) MarshalJSON() ([]byte, error) {
 		Key   string
 		Error string
 	}{
-		Key:   r.key,
+		Key:   strings.Join(r.path, "."),
 		Error: "Missing required key: " + r.key,
 	})
 }

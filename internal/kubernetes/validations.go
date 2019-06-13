@@ -118,7 +118,7 @@ func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schem
 
 				for _, item := range items {
 					if len(schema.Required) > 0 {
-						if errs := resolveRequiredFields(key, item, schema); len(errs) > 0 {
+						if errs := resolveRequiredFields(key, item, schema, tlp); len(errs) > 0 {
 							errors = append(errors, errs...)
 						}
 					}
@@ -139,7 +139,7 @@ func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schem
 			}
 
 			if len(schema.Required) > 0 {
-				if errs := resolveRequiredFields(key, value, schema); len(errs) > 0 {
+				if errs := resolveRequiredFields(key, value, schema, tlp); len(errs) > 0 {
 					errors = append(errors, errs...)
 				}
 			}
@@ -192,7 +192,7 @@ func (v *Validator) handleObject(key string, value interface{}, path []string, s
 }
 
 // objectValue will be a map[interface{}]interface{}
-func resolveRequiredFields(key string, objectValue interface{}, schema *Schema) []error {
+func resolveRequiredFields(key string, objectValue interface{}, schema *Schema, path []string) []error {
 	mapvalues, ok := objectValue.(map[interface{}]interface{})
 	if !ok {
 		return []error{NewWrongTypeError(key, "map[interface{}]interface{}", objectValue)}
@@ -212,7 +212,7 @@ func resolveRequiredFields(key string, objectValue interface{}, schema *Schema) 
 	}
 	for key, found := range requiredKeys {
 		if !found {
-			return []error{NewRequiredKeyNotFoundError(key)}
+			return []error{NewRequiredKeyNotFoundError(key, path)}
 		}
 	}
 	return []error{}

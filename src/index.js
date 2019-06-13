@@ -85,7 +85,7 @@ spec:
       labels:
         app: nginx
     spec:
-      contaisdsners:
+      containers:
       - name: nginx
         image: nginx:1.7.9
         ports:
