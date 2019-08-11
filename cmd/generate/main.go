@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	defaultActiveTab = "1.14"
+	defaultActiveTab = "1.15"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	versions := []string{"1.14", "1.13", "1.12", "1.11"}
+	versions := []string{"1.15", "1.14", "1.13", "1.12"}
 	validators := make([]validator, len(versions))
 	for i, version := range versions {
 		resolver, err := kubernetes.NewResolver(version)

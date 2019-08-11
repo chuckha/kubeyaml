@@ -32,7 +32,7 @@ func (v *Validator) Version() string {
 	return v.resolver.Version()
 }
 
-// Validate is the meat of this code. It sees incoming data and validates it against the known schemas.
+// Validate sees incoming data and validates it against the known schemas.
 // This is recursive so it does a depth first search of all key/values.
 // TODO(chuckha) turn this into a stack-based dfs search.
 func (v *Validator) Validate(incoming map[interface{}]interface{}, schema *Schema) []error {

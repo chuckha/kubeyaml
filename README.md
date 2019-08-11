@@ -69,7 +69,11 @@
 
 # Updating schemas
 
+0. Add new minors to scripts/update-schemas.go
 1. Run `go run scripts/update-schemas.go`
+2. Update lookup.go to add new minor versions
+3. Update cmd/generate/main.go
+4. Update cmd/server/main.go
 
 ## TLS
 

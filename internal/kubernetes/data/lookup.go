@@ -21,6 +21,8 @@ func (s *StaticFiles) Swagger(version string) []byte {
 		return s.OneThirteen()
 	case "1.14":
 		return s.OneFourteen()
+	case "1.15":
+		return s.OneFifteen()
 	default:
 		panic(fmt.Sprintf("unknown version %v", version))
 	}
