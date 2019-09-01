@@ -1,0 +1,12 @@
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest
+metadata:
+  name: my-svc.my-namespace
+spec:
+  groups:
+  - system:authenticated
+  request: idkwhateverlol
+  usages:
+  - digital signature
+  - key encipherment
+  - server auths
