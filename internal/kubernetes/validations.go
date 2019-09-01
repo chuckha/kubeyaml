@@ -201,8 +201,8 @@ func resolveRequiredFields(key string, objectValue interface{}, schema *Schema, 
 	for _, k := range schema.Required {
 		requiredKeys[k] = false
 	}
-	for key := range mapvalues {
-		realKey, ok := key.(string)
+	for k := range mapvalues {
+		realKey, ok := k.(string)
 		if !ok {
 			return []error{NewKeyNotStringError(key)}
 		}
@@ -210,9 +210,10 @@ func resolveRequiredFields(key string, objectValue interface{}, schema *Schema, 
 			requiredKeys[realKey] = true
 		}
 	}
-	for key, found := range requiredKeys {
+	for k, found := range requiredKeys {
 		if !found {
-			return []error{NewRequiredKeyNotFoundError(key, path)}
+			path = append(path, key)
+			return []error{NewRequiredKeyNotFoundError(k, path)}
 		}
 	}
 	return []error{}
