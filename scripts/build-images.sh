@@ -7,5 +7,5 @@ go test ./...
 go run ./cmd/generate/main.go
 npm run build-prod
 
-docker build . -t "chuckdha/kubeyaml-web:latest"
-docker build --file Dockerfile.backend . -t "chuckdha/kubeyaml-backend:latest"
+docker build --file frontend.Dockerfile . -t "chuckdha/kubeyaml-web:latest"
+docker build --file backend.Dockerfile . -t "chuckdha/kubeyaml-backend:latest"
