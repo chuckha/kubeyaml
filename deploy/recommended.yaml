@@ -1,0 +1,106 @@
+#### TEMPLATE OF DEPLOYMENT FOR KUBEYAML
+#########################################
+apiVersion: v1
+data:
+  default.conf: |
+    server {
+        server_name kubeyaml.com dev.kubeyaml.com;
+        root /srv/www;
+
+        location /validate {
+            proxy_pass http://kubeyaml-backend:9000;
+        }
+    }
+kind: ConfigMap
+metadata:
+  name: kubeyaml-web-nginx
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: kubeyaml
+  name: kubeyaml
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubeyaml
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: kubeyaml
+    spec:
+      volumes:
+        - name: nginx-default
+          configMap:
+            name: kubeyaml-web-nginx 
+      containers:
+      - name: kubeyaml-web
+        image: docker.io/chuckdha/kubeyaml-web:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "80m"
+          limits:
+            memory: "100Mi"
+            cpu: "200m"
+        volumeMounts:
+          - name: nginx-default
+            mountPath: /etc/nginx/conf.d/default.conf
+            subPath: default.conf
+            readOnly: true
+        ports:
+        - containerPort: 80 
+          name: web
+          protocol: TCP
+
+      - name: kubeyaml-backend
+        image: docker.io/chuckdha/kubeyaml-backend:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "80m"
+          limits:
+            memory: "100Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 9000 
+          name: backend
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kubeyaml
+  name: kubeyaml
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: kubeyaml
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kubeyaml
+  name: kubeyaml-backend
+spec:
+  ports:
+  - port: 9000
+    protocol: TCP
+  selector:
+    app: kubeyaml
+  type: ClusterIP
