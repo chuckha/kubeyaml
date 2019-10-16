@@ -60,6 +60,15 @@
 3. Push the image with `./scripts/push-image.sh`
 4. On the server, restart the kubeyaml service which will pull and restart the image.
 
+
+## Deploying on K8s cluster
+```
+kubectl apply -f https://raw.githubusercontent.com/chuckha/kubeyaml/master/deploy/recommended.yaml
+
+# to use Traefik as your ingress controller
+kubectl apply -f https://raw.githubusercontent.com/chuckha/kubeyaml/master/deploy/ingress-traefik.yaml
+```
+
 ### Staging
 
 1. Make the binary
