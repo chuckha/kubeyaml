@@ -14,18 +14,6 @@ import (
 	"github.com/chuckha/kubeyaml/internal/kubernetes"
 )
 
-/*
-kubeyaml - (read from standard in until EOF, output the same yaml colorized)
-output
-
-	filename
-contents
-..append
-
---silent => do not output anything just exit 0 on success 1 on failure
---versions 1.8,1.9,1.10,1.11,1.12
-*/
-
 type options struct {
 	Versions []string
 	versions *string
@@ -50,7 +38,7 @@ func main() {
 func run(in io.Reader, out io.Writer, args ...string) error {
 	opts := &options{}
 	validate := flag.NewFlagSet("validate", flag.ExitOnError)
-	opts.versions = validate.String("versions", "1.14,1.13,1.12,1.11,1.10,1.9", "comma separated list of kubernetes versions to validate against")
+	opts.versions = validate.String("versions", "1.17,1.16,1.15,1.14,1.13,1.12,1.11,1.10,1.9", "comma separated list of kubernetes versions to validate against")
 	opts.silent = validate.Bool("silent", false, "if true, kubeyaml will not print any output")
 	validate.Parse(args)
 	err := opts.Validate()
