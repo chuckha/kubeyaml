@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// First item is the default tab
-	versions := []string{"1.17", "1.16", "1.15"}
+	versions := []string{"1.18", "1.17", "1.16", "1.15"}
 	validators := make([]validator, len(versions))
 	for i, version := range versions {
 		resolver, err := kubernetes.NewResolver(version)
