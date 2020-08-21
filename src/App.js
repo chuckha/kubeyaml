@@ -16,12 +16,14 @@ import Tabs from "react-bulma-components/lib/components/tabs";
 import Validation from "./validation";
 import Error from "./Error";
 import Document from "./Document";
+import Validating from "./Validating";
 
 class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             document: "",
+            errorDocument: "",
             versions:  ["1.18", "1.17", "1.16", "1.15"],
             active: "1.18",
             errors: {},
@@ -32,9 +34,11 @@ class App extends React.Component {
         this.onChange = this.onChange.bind(this)
         this.handleValidate = this.handleValidate.bind(this)
         this.handleTabClick = this.handleTabClick.bind(this)
-        this.errorsCallback = this.errorsCallback.bind(this)
         this.activeError = this.activeError.bind(this)
         this.docError = this.docError.bind(this)
+        this.errorsCallback = this.errorsCallback.bind(this)
+        this.alwaysErrorsCallback = this.alwaysErrorsCallback.bind(this)
+        this.setUnknownErrorState = this.setUnknownErrorState.bind(this)
     }
 
     handleValidate(e) {
@@ -48,12 +52,36 @@ class App extends React.Component {
         }
     }
 
+    alwaysErrorsCallback() {
+        this.setState({validating: false})
+    }
+
+    setUnknownErrorState() {
+        const reducer = (accumulator, currentValue) => Object.assign(accumulator, {[currentValue]: [{Key: "unknown", Error: ""}]})
+        this.setState({errors: this.state.versions.reduce(reducer, {})})
+    }
+
     errorsCallback(response) {
-        this.setState({errors: JSON.parse(response)})
+        this.setState({
+            errors: JSON.parse(response),
+            errorDocument: this.state.document,
+        })
     }
 
     onChange(event) {
-        this.setState({document: event.target.value})
+        this.setState({
+            document: event.target.value,
+            errorDocument: "",
+            errors: [],
+            validating: true,
+        })
+        this.setUnknownErrorState()
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.document !== prevState.document) {
+            this.validator.validate(this.state.document, this.errorsCallback, this.setUnknownErrorState, this.alwaysErrorsCallback)
+        }
     }
 
     activeError() {
@@ -72,18 +100,20 @@ class App extends React.Component {
 
     docError() {
         const errObj = this.state.errors[this.state.active]
+        const noErrors = "No errors were found!"
         if (errObj === undefined) {
-            return ""
+            return noErrors
         }
         if (errObj.length === 0) {
-            return ""
+            return noErrors
         }
         if (errObj[0].hasOwnProperty("Error")) {
-            let doc = new Document(this.state.document, errObj[0])
+            let doc = new Document(this.state.errorDocument, errObj[0])
             return doc.doc.toString()
         }
-        return ""
+        return noErrors
     }
+
 
     setExample(event) {
         event.preventDefault()
@@ -94,7 +124,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: invalid number
+  replicas: 3
   selector:
     matchLabels:
       app: nginx
@@ -104,7 +134,9 @@ spec:
         app: nginx
     spec:
       containers:
-      - name: nginx
+      - name: hello
+        image: myimage
+      - name: 3
         image: nginx:1.7.9
         ports:
         - containerPort: 80
@@ -148,7 +180,7 @@ spec:
                                 <Content>
                                     <form>
                                         <Button backgroundColor="success" onClick={this.setExample}>Example YAML</Button>
-                                        <Button backgroundColor="info" pull="right" onClick={this.handleValidate}>Validate</Button>
+                                        <Validating validating={this.state.validating}/>
                                         <Textarea rows={30} className="is-family-code" placeholder="Paste YAML here!" onChange={this.onChange} value={this.state.document} />
                                     </form>
                                 </Content>

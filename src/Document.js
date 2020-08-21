@@ -24,7 +24,6 @@ class Document {
         if (elements === undefined || elements === null) {
             return
         }
-        console.log("Key: ", key, "elements:", elements, elements.type)
         let parsedKeys = key.split(".")
         if (elements.type === "PLAIN") {
             elements.value = `<span class="has-text-danger">${safeHtml(elements.strValue, config)}</span>`
@@ -37,11 +36,18 @@ class Document {
                     items[i].value = `<span class="has-text-danger">${safeHtml(items[i].strValue, config)}</span>`
                     if (items[i+1].type === "MAP_VALUE") {
                         this.findNode(parsedKeys.slice(1).join("."), items[i+1].node)
+                        return
                     }
-                    console.log("unexpected type", items[i].type)
                     return
                 }
             }
+            return
+        }
+        if (elements.type === "SEQ") {
+            const index = parseInt(parsedKeys[0], 10)
+            let items = elements.items
+            this.findNode(parsedKeys.slice(1).join("."), items[index].node)
+            return
         }
     }
 }

@@ -1,11 +1,13 @@
+import debounce from "debounce";
+
 class Validation {
     constructor(props) {
         this.baseURL = props.baseURL
 
-        this.validate = this.validate.bind(this)
+        this.validate = debounce(this.validate.bind(this), 500)
     }
 
-    validate(document, callback) {
+    validate(document, callback, errorCallback, alwaysCallback) {
         let xhr = new XMLHttpRequest()
         xhr.onreadystatechange = function(e) {
             if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -13,9 +15,9 @@ class Validation {
                 if (status === 0 || (status >= 200 && status < 400)) {
                     callback(xhr.response)
                 } else {
-                    console.log(xhr.response, status)
+                    errorCallback()
                 }
-
+                alwaysCallback()
             }
         }
         xhr.open("POST", this.baseURL + "/validate", true)
