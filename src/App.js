@@ -5,18 +5,22 @@ import Section from "react-bulma-components/lib/components/section"
 import Hero from "react-bulma-components/lib/components/hero";
 import Container from "react-bulma-components/lib/components/container";
 import Heading from "react-bulma-components/lib/components/heading";
+import Footer from "react-bulma-components/lib/components/footer";
+import Level from 'react-bulma-components/lib/components/level';
 import Content from "react-bulma-components/lib/components/content";
-import Icon from "react-bulma-components/lib/components/icon";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons"
-import Tile from "react-bulma-components/lib/components/tile";
-import {Textarea} from "react-bulma-components/lib/components/form"
-import Tabs from "react-bulma-components/lib/components/tabs";
+import Image from 'react-bulma-components/lib/components/image';
+import Icon from 'react-bulma-components/lib/components/icon';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons';
+import Tile from 'react-bulma-components/lib/components/tile';
+import {Textarea} from 'react-bulma-components/lib/components/form';
+import Tabs from 'react-bulma-components/lib/components/tabs';
 
-import Validation from "./validation";
-import Error from "./Error";
-import Document from "./Document";
-import Validating from "./Validating";
+import Validation from './validation';
+import Error from './Error';
+import Document from './Document';
+import Validating from './Validating';
+import github from './github.png';
 
 class App extends React.Component {
     constructor(props) {
@@ -199,6 +203,18 @@ spec:
                         </Tile>
                     </Tile>
                 </Section>
+
+                <Footer>
+                    <Level renderAs="nav">
+                        <Level.Item>
+                            <Content>
+                                <figure>
+                                    <a href="https://github.com/chuckha/kubeyaml"><Image src={github} size={64} /></a>
+                                </figure>
+                            </Content>
+                        </Level.Item>
+                    </Level>
+                </Footer>
             </div>
         );
     }
