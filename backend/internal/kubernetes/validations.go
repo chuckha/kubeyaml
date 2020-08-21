@@ -116,14 +116,17 @@ func (v *Validator) validate(incoming map[interface{}]interface{}, schema *Schem
 					continue
 				}
 
-				for _, item := range items {
+				for i, item := range items {
+					// Sequences keys will have the index following the key
+					// e.g. spec.template.containers.1 (the problem is in the second one)
+					tlpIdx := append(tlp, fmt.Sprintf("%d", i))
 					if len(schema.Required) > 0 {
-						if errs := resolveRequiredFields(key, item, schema, tlp); len(errs) > 0 {
+						if errs := resolveRequiredFields(key, item, schema, tlpIdx); len(errs) > 0 {
 							errors = append(errors, errs...)
 						}
 					}
 
-					if errs := v.handleObject(key, item, tlp, schema); len(errs) > 0 {
+					if errs := v.handleObject(key, item, tlpIdx, schema); len(errs) > 0 {
 						errors = append(errors, errs...)
 					}
 				}
