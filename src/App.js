@@ -46,6 +46,7 @@ class App extends React.Component {
         this.alwaysErrorsCallback = this.alwaysErrorsCallback.bind(this)
         this.setUnknownErrorState = this.setUnknownErrorState.bind(this)
         this.versionsSuccess = this.versionsSuccess.bind(this)
+        this.versionsError = this.versionsError.bind(this)
     }
 
     componentDidMount() {
@@ -53,7 +54,6 @@ class App extends React.Component {
     }
 
     versionsSuccess(data) {
-        console.log(data)
         const parsed = JSON.parse(data)
         this.setState({
             versions: parsed.Versions,
@@ -62,7 +62,10 @@ class App extends React.Component {
     }
 
     versionsError() {
-        console.log("error with versions callback")
+        this.setState({
+            versions: ["??"],
+            active: "??"
+        })
     }
 
     versionsAlways() {}
