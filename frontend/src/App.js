@@ -32,7 +32,8 @@ class App extends React.Component {
             versions:  [],
             active: "",
             errors: {},
-            baseURL: "http://localhost:9000"
+            //baseURL: "http://localhost:9000"
+            baseURL: '',
         }
         this.validator = new Validation({baseURL: this.state.baseURL})
 

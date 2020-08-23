@@ -1,0 +1,10 @@
+version: '3'
+services:
+  frontend:
+    image: registry.hub.docker.com/chuckdha/kubeyaml-frontend:latest
+    ports:
+    - "8000:80"
+    links:
+    - backend
+  backend:
+    image: registry.hub.docker.com/chuckdha/kubeyaml-backend:latest
