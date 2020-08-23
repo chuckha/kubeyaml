@@ -11,7 +11,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/chuckha/kubeyaml.com/backend/internal"
 	"github.com/chuckha/kubeyaml.com/backend/internal/kubernetes"
+	"github.com/chuckha/kubeyaml.com/backend/internal/messages"
 )
 
 type ServerArgs struct {
@@ -33,6 +35,11 @@ func main() {
 	}
 
 	versions := []string{"1.15", "1.16", "1.17", "1.18"}
+	sortedVersions, err := internal.SortVersions(versions...)
+	if err != nil {
+		fmt.Printf("failed to sort versions: %+v", err)
+		os.Exit(1)
+	}
 	validators := make([]validator, len(versions))
 	for i, version := range versions {
 		resolver, err := kubernetes.NewResolver(version)
@@ -57,10 +64,12 @@ func main() {
 		loader:     loader,
 		finder:     gf,
 		dev:        sa.Development,
+		versions:   computeVersionsResponse(sortedVersions),
 	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/validate", s.validate)
-	mux.HandleFunc("/favicon.ico", s.favicon)
+	mux.HandleFunc("/validate", s.corsForDev(s.validate))
+	mux.HandleFunc("/versions", s.corsForDev(s.versionsHandler))
+	mux.HandleFunc("/favicon.ico", s.corsForDev(s.favicon))
 	mux.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("static"))))
 	fmt.Printf("listening on port :%s\n", sa.Port)
 	if sa.Development {
@@ -108,6 +117,7 @@ type server struct {
 	loader     loader
 	finder     groupFinder
 	dev        bool
+	versions   []byte
 }
 
 func (s *server) favicon(w http.ResponseWriter, r *http.Request) {
@@ -115,11 +125,6 @@ func (s *server) favicon(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) validate(w http.ResponseWriter, r *http.Request) {
-	// Enable CORS in dev mode
-	if s.dev {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-	}
-
 	s.logRequest("validate", r)
 
 	if r.Method != "POST" {
@@ -208,6 +213,36 @@ func (s *server) validate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *server) versionsHandler(w http.ResponseWriter, r *http.Request) {
+	if _, err := w.Write(s.versions); err != nil {
+		s.logger.Infof("error writing response body: %v\n", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
 func (s *server) logRequest(method string, r *http.Request) {
 	s.logger.Infof("[%s]: %s %s\n", method, r.Method, r.URL.Path)
+}
+
+// corsForDev enables CORS when the server is running in development mode
+func (s *server) corsForDev(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if s.dev {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+		}
+		f(w, r)
+	}
+}
+
+func computeVersionsResponse(versions []string) []byte {
+	versionResponse := messages.VersionsResponse{
+		Versions:       versions,
+		DefaultVersion: versions[0],
+	}
+	out, err := json.Marshal(versionResponse)
+	if err != nil {
+		fmt.Printf("failed to marshal versions: %+v", err)
+		os.Exit(1)
+	}
+	return out
 }
