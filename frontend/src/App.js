@@ -23,6 +23,13 @@ import Validating from './Validating';
 import fetchVersions from './versions';
 import github from './github.png';
 
+function getBaseUrl() {
+    if (document.location.hostname === "localhost") {
+        return "http://localhost:9000"
+    }
+    return ""
+}
+
 class App extends React.Component {
     constructor(props) {
         super(props)
@@ -32,8 +39,7 @@ class App extends React.Component {
             versions:  [],
             active: "",
             errors: {},
-            //baseURL: "http://localhost:9000"
-            baseURL: '',
+            baseURL: getBaseUrl(),
         }
         this.validator = new Validation({baseURL: this.state.baseURL})
 

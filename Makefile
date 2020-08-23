@@ -1,3 +1,6 @@
+.PHONY: deploy
+deploy: compile-js docker-build docker-deploy
+
 .PHONY: docker-build
 docker-build:
 	docker build -f backend/Dockerfile -t docker.io/chuckdha/kubeyaml-backend:latest backend
