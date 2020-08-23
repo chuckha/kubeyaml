@@ -20,6 +20,7 @@ import Validation from './validation';
 import Error from './Error';
 import Document from './Document';
 import Validating from './Validating';
+import fetchVersions from './versions';
 import github from './github.png';
 
 class App extends React.Component {
@@ -28,11 +29,12 @@ class App extends React.Component {
         this.state = {
             document: "",
             errorDocument: "",
-            versions:  ["1.18", "1.17", "1.16", "1.15"],
-            active: "1.18",
+            versions:  [],
+            active: "",
             errors: {},
+            baseURL: "http://localhost:9000"
         }
-        this.validator = new Validation({baseURL: "http://localhost:9000"})
+        this.validator = new Validation({baseURL: this.state.baseURL})
 
         this.setExample = this.setExample.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -43,7 +45,27 @@ class App extends React.Component {
         this.errorsCallback = this.errorsCallback.bind(this)
         this.alwaysErrorsCallback = this.alwaysErrorsCallback.bind(this)
         this.setUnknownErrorState = this.setUnknownErrorState.bind(this)
+        this.versionsSuccess = this.versionsSuccess.bind(this)
     }
+
+    componentDidMount() {
+        fetchVersions(this.state.baseURL, this.versionsSuccess, this.versionsError, this.versionsAlways)
+    }
+
+    versionsSuccess(data) {
+        console.log(data)
+        const parsed = JSON.parse(data)
+        this.setState({
+            versions: parsed.Versions,
+            active: parsed.DefaultVersion,
+        })
+    }
+
+    versionsError() {
+        console.log("error with versions callback")
+    }
+
+    versionsAlways() {}
 
     handleValidate(e) {
         e.preventDefault()
