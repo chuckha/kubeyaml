@@ -15,3 +15,15 @@ docker-deploy:
 compile-js:
 	npm run --prefix frontend build
 
+.PHONY: go-test
+go-test:
+	cd backend && \
+		go test ./.../
+
+kubeyaml:
+	cd backend && \
+		go build -o ../kubeyaml cmd/kubeyaml/kubeyaml.go
+
+.PHONY: clean
+clean:
+	rm -f kubeyaml

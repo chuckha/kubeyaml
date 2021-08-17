@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    example: example
+  name: example
+  namespace: example
+spec:
+  selector:
+    matchLabels:
+      example: example
+  serviceName: example
+  template:
+    metadata:
+      labels:
+        example: example
+    spec:
+      containers:
+      - image: example.com/example/example
+        imagePullPolicy: Always
+        name: manager
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: lib-module
+          mountPath: /lib/modules
+          readOnly: true
+      volumes:
+      - hostPath:
+          path: /lib/modules
