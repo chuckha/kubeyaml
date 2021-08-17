@@ -1,6 +1,32 @@
 package data
 
-import "fmt"
+import (
+	"fmt"
+	"io/ioutil"
+	"strings"
+
+	"github.com/pkg/errors"
+)
+
+func AllStaticFiles() (map[string][]byte, error) {
+	out := make(map[string][]byte)
+	infos, err := ioutil.ReadDir(".")
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	for _, fi := range infos {
+		if strings.HasSuffix(fi.Name(), ".json") {
+			data, err := ioutil.ReadFile(fi.Name())
+			if err != nil {
+				return nil, errors.Wrapf(err, "filename: %s", fi.Name())
+			}
+			version := strings.TrimPrefix(fi.Name(), "swagger-")
+			version = strings.TrimSuffix(version, ".json")
+			out[version] = data
+		}
+	}
+	return out, nil
+}
 
 type StaticFiles struct{}
 

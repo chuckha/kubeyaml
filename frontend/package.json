@@ -3,20 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.30",
-    "@fortawesome/free-solid-svg-icons": "^5.14.0",
-    "@fortawesome/react-fontawesome": "^0.1.11",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "debounce": "^1.2.0",
-    "node-sass": "^4.14.1",
-    "react": "^16.13.1",
-    "react-bulma-components": "^3.4.0",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3",
-    "safe-html": "^1.0.0",
-    "yaml": "^1.10.0"
+    "bulma": "^0.9.3"
   },
   "scripts": {
     "start": "react-scripts start",
