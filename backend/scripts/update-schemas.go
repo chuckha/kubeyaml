@@ -30,6 +30,9 @@ func main() {
 		"OneSeventeen": "1.17",
 		"OneEighteen":  "1.18",
 		"OneNineteen":  "1.19",
+		"OneTwenty":    "1.20",
+		"OneTwentyone": "1.21",
+		"OneTwentytwo": "1.22",
 	}
 	urlFmt := "https://raw.githubusercontent.com/kubernetes/kubernetes/release-%s/api/openapi-spec/swagger.json"
 
