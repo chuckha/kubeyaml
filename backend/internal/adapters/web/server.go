@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/chuckha/kubeyaml.com/backend/internal/shared/logging"
+	"github.com/cristifalcas/kubeyaml/backend/internal/shared/logging"
 )
 
 const (

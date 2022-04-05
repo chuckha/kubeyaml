@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/chuckha/kubeyaml.com/backend/internal/adapters/web"
-	"github.com/chuckha/kubeyaml.com/backend/internal/service/validation"
+	"github.com/cristifalcas/kubeyaml/backend/internal/adapters/web"
+	"github.com/cristifalcas/kubeyaml/backend/internal/service/validation"
 )
 
 func main() {

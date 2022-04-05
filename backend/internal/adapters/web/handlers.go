@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/chuckha/kubeyaml.com/backend/internal/kubernetes"
+	"github.com/cristifalcas/kubeyaml/backend/internal/kubernetes"
 )
 
 func (s *Server) main(w http.ResponseWriter, r *http.Request) {

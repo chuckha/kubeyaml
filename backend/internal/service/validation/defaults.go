@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/chuckha/kubeyaml.com/backend/internal/kubernetes/data"
+	"github.com/cristifalcas/kubeyaml/backend/internal/kubernetes/data"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )

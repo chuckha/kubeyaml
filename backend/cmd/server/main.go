@@ -11,9 +11,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/chuckha/kubeyaml.com/backend/internal"
-	"github.com/chuckha/kubeyaml.com/backend/internal/kubernetes"
-	"github.com/chuckha/kubeyaml.com/backend/internal/messages"
+	"github.com/cristifalcas/kubeyaml/backend/internal"
+	"github.com/cristifalcas/kubeyaml/backend/internal/kubernetes"
+	"github.com/cristifalcas/kubeyaml/backend/internal/messages"
 )
 
 type ServerArgs struct {

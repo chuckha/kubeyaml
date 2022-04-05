@@ -1,4 +1,4 @@
-module github.com/chuckha/kubeyaml.com/backend
+module github.com/cristifalcas/kubeyaml/backend
 
 go 1.13
 
