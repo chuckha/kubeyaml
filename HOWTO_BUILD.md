@@ -1,10 +1,10 @@
 # Instructions for building kubeyaml
 
 ```sh
-// copy https://github.com/kubernetes/kubernetes/blob/release-1.23/api/openapi-spec/swagger.json to backend/internal/kubernetes/data/swagger-1.20.json 
-k8s_version=1.23
+k8s_version=1.25
 curl -L https://github.com/kubernetes/kubernetes/blob/release-$k8s_version/api/openapi-spec/swagger.json -o backend/internal/kubernetes/data/swagger-$k8s_version.json
-// update releases in `backend/scripts/update-schemas.go and build` and in `backend/internal/kubernetes/data/lookup.go`
+// update releases in `backend/scripts/update-schemas.go` and in `backend/internal/kubernetes/data/lookup.go`
+// update versions in `backend/cmd/kubeyaml/kubeyaml.go`
 rm -f backend/internal/service/validation/data/swagger-*.json
 cp backend/internal/kubernetes/data/swagger-*.json backend/internal/service/validation/data/
 go build ./backend/scripts/update-schemas.go
@@ -22,7 +22,7 @@ go build -a -installsuffix cgo -o kubeyaml ./cmd/kubeyaml
 
 cd -
 rm -f backend/scripts/update-schemas backend/kubeyaml
-git add backend/internal/kubernetes
+git add backend/internal/kubernetes backend/internal/service/validation
 git commit -a -m "add versions"
 git push
 
